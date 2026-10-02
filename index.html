@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#120d08">
+<title>Rounds • Night Tracker</title>
+<style>
+:root{--bg:#120d08;--card:#21170e;--card2:#2b1e12;--gold:#f5b83d;--gold2:#ffd66f;--cream:#fff6e7;--muted:#b9a58d;--line:#49331d;--red:#d96d5d}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% -10%,#513619 0,#21150b 32%,#120d08 68%);color:var(--cream);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.app{max-width:560px;margin:auto;padding:18px 15px 42px}
+header{text-align:center;padding:6px 0 15px}
+.logo{font-size:18px;font-weight:800;letter-spacing:3px;color:var(--gold)}
+h1{font-size:31px;margin:3px 0 0;letter-spacing:-1px}
+.subtitle{color:var(--muted);font-size:13px;margin-top:4px}
+.hero{border:1px solid var(--line);border-radius:26px;background:linear-gradient(145deg,#342313,#1b120b);padding:18px;box-shadow:0 18px 45px #0008}
+.topline{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:1.5px}
+.countrow{display:flex;align-items:center;justify-content:center;gap:13px;margin:5px 0}
+.mug{font-size:45px}.count{font-size:92px;line-height:1;font-weight:850;color:var(--gold2)}
+.time{text-align:center;font-size:23px;font-weight:700}.date{text-align:center;color:var(--muted);font-size:13px;margin-top:2px}
+.buttons{display:grid;grid-template-columns:1fr;gap:10px;margin-top:17px}
+button{font:inherit;font-weight:800;border:0;cursor:pointer;border-radius:15px;padding:14px 10px}
+.add{background:var(--gold);color:#201307;box-shadow:0 8px 22px #f5b83d35}.share{background:#f2e9dc;color:#1b120b}
+.reset{display:block;margin:10px auto 0;background:transparent;color:#a99680;font-size:12px;padding:6px}
+.latest{margin-top:18px}
+.sectionhead{display:flex;justify-content:space-between;align-items:end;margin:0 3px 9px}
+.sectionhead h2{font-size:18px;margin:0}.sectionhead span{font-size:12px;color:var(--muted)}
+.latestcard{background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden}
+.latestphoto{height:245px;background:#302014;display:flex;align-items:center;justify-content:center;color:#8e7c66;font-size:14px;text-align:center}
+.latestphoto img{width:100%;height:100%;object-fit:cover}
+.latestinfo{padding:14px 16px;display:flex;justify-content:space-between;align-items:center}
+.latesttitle{font-weight:850;font-size:20px}.latestmeta{font-size:13px;color:var(--muted);margin-top:2px}
+.photoBtn{background:#3a2919;color:#ffe8b6;padding:10px 13px;font-size:13px}
+.history{margin-top:22px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.item{background:var(--card);border:1px solid var(--line);border-radius:17px;overflow:hidden}
+.itemphoto{height:145px;background:#302014;display:flex;align-items:center;justify-content:center;color:#8e7c66;font-size:12px;text-align:center}
+.itemphoto img{width:100%;height:100%;object-fit:cover}
+.itembody{padding:10px 11px}.itemtop{display:flex;justify-content:space-between;font-weight:800}
+.itemtime{color:var(--muted);font-size:12px;margin-top:3px}
+.del{background:transparent;color:#907b63;padding:2px 5px;font-size:15px}
+.empty{padding:35px 15px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:17px}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:17px}
+.stat{background:#1b120b;border:1px solid var(--line);border-radius:15px;padding:11px;text-align:center}
+.stat b{display:block;font-size:20px;color:var(--gold2)}.stat span{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.goal{margin-top:18px}
+.goalcard{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px}
+.goalform{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.goalform label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.goal input{display:block;width:100%;margin-top:5px;padding:12px;border-radius:12px;border:1px solid var(--line);background:#1b120b;color:var(--cream);font:inherit;font-size:20px;font-weight:800;text-align:center}
+.goal input:focus{outline:none;border-color:var(--gold)}
+.goalbtn{width:100%;margin-top:12px;background:var(--gold);color:#201307}
+.goalreset{width:100%;margin-top:12px;background:#3a2919;color:#ffe8b6}
+.goaltimer{text-align:center;font-size:44px;font-weight:850;font-variant-numeric:tabular-nums;color:var(--gold2);line-height:1.1}
+.goaltimer.done{color:var(--red)}
+.goalsub{text-align:center;color:var(--muted);font-size:13px;margin-top:2px}
+.goalprog{display:flex;justify-content:space-between;align-items:baseline;margin-top:14px;font-weight:800}
+.goalprog b{font-size:24px;color:var(--gold2)}
+.bar{height:14px;border-radius:8px;background:#1b120b;border:1px solid var(--line);overflow:hidden;margin-top:6px}
+.bar span{display:block;height:100%;width:0;background:linear-gradient(90deg,#d9861a,var(--gold2));transition:width .4s}
+.goalhit{color:#8fd18b}
+.foot{text-align:center;color:#756451;font-size:11px;margin-top:20px}
+input{display:none}
+@media(max-width:390px){.count{font-size:78px}.latestphoto{height:210px}.itemphoto{height:120px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="logo">BEER NIGHT</div>
+  <h1>🍺 Rounds</h1>
+  <div class="subtitle">Track the night. One beer at a time.</div>
+</header>
+
+<section class="hero">
+  <div class="topline"><span>Tonight's Count</span><span id="session">Ready</span></div>
+  <div class="countrow"><div class="mug">🍺</div><div class="count" id="count">0</div></div>
+  <div class="time" id="clock">--:--:-- --</div>
+  <div class="date" id="date">---</div>
+  <div class="buttons">
+    <button class="add" onclick="addBeer()">🍺 ADD BEER</button>
+  </div>
+  <button class="reset" onclick="resetAll()">Reset tonight's count</button>
+</section>
+
+<section class="goal">
+  <div class="sectionhead"><h2>Goal</h2><span id="goalStatus">Not started</span></div>
+  <div class="goalcard">
+    <div id="goalSetup">
+      <div class="goalform">
+        <label>Beers<input id="goalBeers" type="number" min="1" max="99" value="10" inputmode="numeric"></label>
+        <label>Hours<input id="goalHours" type="number" min="0" max="48" value="3" inputmode="numeric"></label>
+        <label>Minutes<input id="goalMins" type="number" min="0" max="59" value="0" inputmode="numeric"></label>
+      </div>
+      <button class="goalbtn" onclick="startGoal()">⏱ START TIMER</button>
+    </div>
+    <div id="goalLive" hidden>
+      <div class="goaltimer" id="goalTimer">0:00:00</div>
+      <div class="goalsub" id="goalSub">left on the clock</div>
+      <div class="goalprog"><span id="goalMsg">Progress</span><span><b id="goalDone">0</b> / <span id="goalTarget">0</span></span></div>
+      <div class="bar"><span id="goalBar"></span></div>
+      <button class="goalreset" onclick="resetGoal()">↺ RESET TIMER</button>
+    </div>
+  </div>
+</section>
+
+<section class="latest">
+  <div class="sectionhead"><h2>Latest Beer</h2><span id="latestHint">None yet</span></div>
+  <div class="latestcard" id="latest"></div>
+</section>
+
+<section class="history">
+  <div class="sectionhead"><h2>Beer History</h2><span id="total">0 beers</span></div>
+  <div class="grid" id="history"></div>
+</section>
+
+<div class="stats">
+  <div class="stat"><b id="statCount">0</b><span>Beers</span></div>
+  <div class="stat"><b id="statSpan">—</b><span>First → Last</span></div>
+  <div class="stat"><b id="statPhotos">0</b><span>Photos</span></div>
+</div>
+<div class="foot" id="foot">Connecting…</div>
+</div>
+
+<input id="photoInput" type="file" accept="image/*" capture="environment">
+
+<script>
+/* ============================================================
+   SETUP (same as The Lounge NFL app)
+   1. Paste your Firebase web config below (you can reuse the
+      Lounge Firebase project). Leave null = this-phone-only mode.
+   2. Realtime Database rules, add alongside your existing ones:
+        "beer-counter": { ".read": true, ".write": true }
+   3. Host on GitHub Pages and drop the link in WhatsApp.
+      Optional: add ?room=name to the link for a separate counter.
+   ============================================================ */
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyBr8bp52QkZ0VgBnAxwA4EYnzw3ZtTDJCQ",
+  authDomain: "the-lounge-nfl-predictions.firebaseapp.com",
+  databaseURL: "https://the-lounge-nfl-predictions-default-rtdb.firebaseio.com",
+  projectId: "the-lounge-nfl-predictions",
+  storageBucket: "the-lounge-nfl-predictions.firebasestorage.app",
+  messagingSenderId: "728931934835",
+  appId: "1:728931934835:web:ac97df4d68e7bd901f8006"
+};
+
+const ROOM=((new URLSearchParams(location.search).get("room")||"the-lounge").toLowerCase().replace(/[^a-z0-9_-]/g,""))||"the-lounge";
+const PATH="beer-counter/"+ROOM+"/beers";
+
+let beers=[];          // [{id,time,photo}] sorted oldest -> newest
+let pending=null;      // id of the beer waiting for a photo
+let db=null, offset=0;
+let goal=null;         // {target, startedAt, endsAt}
+const GOAL_PATH="beer-counter/"+ROOM+"/goal";
+const GKEY="beerCounter_goal:"+ROOM;
+const now=()=>Date.now()+offset;
+
+const $=id=>document.getElementById(id);
+function time(ts){return new Date(ts).toLocaleTimeString([],{hour:"numeric",minute:"2-digit"})}
+function fullTime(ts){return new Date(ts).toLocaleTimeString([],{hour:"numeric",minute:"2-digit",second:"2-digit"})}
+function day(ts){return new Date(ts).toLocaleDateString([],{weekday:"short",month:"short",day:"numeric"})}
+
+function clock(){
+ const d=new Date();
+ $("clock").textContent=d.toLocaleTimeString([],{hour:"numeric",minute:"2-digit",second:"2-digit"});
+ $("date").textContent=d.toLocaleDateString([],{weekday:"long",month:"long",day:"numeric"});
+}
+setInterval(clock,1000);clock();
+
+/* ---------- storage: Firebase (shared) or local (fallback) ---------- */
+const LKEY="beerCounter_v2:"+ROOM;
+function localRead(){try{return JSON.parse(localStorage.getItem(LKEY))||{}}catch(e){return {}}}
+function localWrite(o){try{localStorage.setItem(LKEY,JSON.stringify(o))}catch(e){alert("Phone storage is full. Remove a few photos.")}}
+function apply(obj){
+ beers=Object.entries(obj||{}).map(([id,b])=>({id,...b})).sort((a,b)=>a.time-b.time);
+ render();
+}
+const store={
+ add(b){
+  if(db) return db.ref(PATH).push(b).key;
+  const o=localRead(),id="b"+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+  o[id]=b;localWrite(o);apply(o);return id;
+ },
+ update(id,patch){
+  if(db) return db.ref(PATH+"/"+id).update(patch).catch(()=>alert("Couldn't save the photo. Check your connection."));
+  const o=localRead();if(o[id])Object.assign(o[id],patch);localWrite(o);apply(o);
+ },
+ remove(id){
+  if(db) return db.ref(PATH+"/"+id).remove();
+  const o=localRead();delete o[id];localWrite(o);apply(o);
+ },
+ clear(){
+  if(db) return db.ref(PATH).remove();
+  localWrite({});apply({});
+ }
+};
+function loadScript(src){return new Promise((res,rej)=>{const s=document.createElement("script");s.src=src;s.onload=res;s.onerror=rej;document.head.appendChild(s)})}
+async function boot(){
+ if(FIREBASE_CONFIG){
+  try{
+   const v="10.12.2";
+   await loadScript(`https://www.gstatic.com/firebasejs/${v}/firebase-app-compat.js`);
+   await loadScript(`https://www.gstatic.com/firebasejs/${v}/firebase-database-compat.js`);
+   firebase.initializeApp(FIREBASE_CONFIG);
+   db=firebase.database();
+   db.ref(".info/serverTimeOffset").on("value",s=>offset=s.val()||0);
+   db.ref(PATH).on("value",s=>apply(s.val()));
+   db.ref(GOAL_PATH).on("value",s=>{goal=s.val();renderGoal()});
+   $("foot").textContent="Live for everyone with the link 🍻";
+   return;
+  }catch(e){console.error(e);db=null}
+ }
+ $("foot").textContent="Your log stays on this device. Add Firebase to share it live.";
+ apply(localRead());
+ try{goal=JSON.parse(localStorage.getItem(GKEY))}catch(e){goal=null}
+ renderGoal();
+}
+
+/* ---------- goal timer ---------- */
+function saveGoal(g){
+ if(db) return db.ref(GOAL_PATH).set(g).catch(()=>alert("Couldn't update the goal. Check your connection."));
+ goal=g;if(g)localStorage.setItem(GKEY,JSON.stringify(g));else localStorage.removeItem(GKEY);renderGoal();
+}
+function startGoal(){
+ const target=parseInt($("goalBeers").value,10);
+ const ms=((parseInt($("goalHours").value,10)||0)*60+(parseInt($("goalMins").value,10)||0))*60000;
+ if(!(target>0)){alert("Set a goal of at least 1 beer.");return}
+ if(ms<60000){alert("Set the timer for at least 1 minute.");return}
+ const t=now();
+ saveGoal({target,startedAt:t,endsAt:t+ms});
+}
+function resetGoal(){
+ if(confirm("Reset the goal timer for everyone? Your beer log stays."))saveGoal(null);
+}
+function fmtClock(ms){
+ const s=Math.ceil(ms/1000);
+ return Math.floor(s/3600)+":"+String(Math.floor(s%3600/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");
+}
+function renderGoal(){
+ const live=!!(goal&&goal.endsAt);
+ $("goalSetup").hidden=live;$("goalLive").hidden=!live;
+ if(!live){$("goalStatus").textContent="Not started";return}
+ const t=now(),left=Math.max(0,goal.endsAt-t);
+ const done=beers.filter(b=>b.time>=goal.startedAt&&b.time<=goal.endsAt).length;
+ const hit=done>=goal.target,over=left===0;
+ $("goalTimer").textContent=over?"Time's up":fmtClock(left);
+ $("goalTimer").classList.toggle("done",over);
+ $("goalSub").textContent=over?(hit?"Goal smashed 🍻":"Missed it by "+(goal.target-done)):"left on the clock · ends "+time(goal.endsAt);
+ $("goalDone").textContent=done;$("goalTarget").textContent=goal.target;
+ $("goalBar").style.width=Math.min(100,done/goal.target*100)+"%";
+ const msg=$("goalMsg");
+ msg.className=hit?"goalhit":"";
+ msg.textContent=hit?"🏆 Goal hit!":(goal.target-done)+" to go";
+ $("goalStatus").textContent=over?"Finished":hit?"Goal hit!":"Running";
+}
+setInterval(renderGoal,1000);
+
+/* ---------- photos: shrink before saving so they sync fast ---------- */
+function compress(file,max=720,q=.62){
+ return new Promise((res,rej)=>{
+  const url=URL.createObjectURL(file),img=new Image();
+  img.onload=()=>{const k=Math.min(1,max/Math.max(img.width,img.height)),c=document.createElement("canvas");
+   c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);
+   c.getContext("2d").drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(url);res(c.toDataURL("image/jpeg",q))};
+  img.onerror=()=>{URL.revokeObjectURL(url);rej()};
+  img.src=url;
+ });
+}
+
+/* ---------- actions ---------- */
+function addBeer(){
+ pending=store.add({time:now()});
+ $("photoInput").value="";$("photoInput").click();
+}
+function photo(id){
+ pending=id;$("photoInput").value="";$("photoInput").click();
+}
+$("photoInput").addEventListener("change",async e=>{
+ const f=e.target.files[0]; if(!f||!pending)return;
+ const id=pending;pending=null;
+ try{store.update(id,{photo:await compress(f)})}
+ catch(err){alert("That photo couldn't be read. Try a JPG or PNG.")}
+});
+function removeBeer(id){
+ const i=beers.findIndex(b=>b.id===id);
+ if(i>-1&&confirm("Remove Beer #"+(i+1)+"?"))store.remove(id);
+}
+function resetAll(){
+ if(beers.length&&confirm("Reset tonight's entire beer log for everyone?"))store.clear();
+}
+
+/* ---------- render (unchanged look) ---------- */
+function render(){
+ $("count").textContent=beers.length;
+ $("total").textContent=`${beers.length} ${beers.length===1?"beer":"beers"}`;
+ $("statCount").textContent=beers.length;
+ $("statPhotos").textContent=beers.filter(x=>x.photo).length;
+ $("session").textContent=beers.length?"In progress":"Ready";
+ renderGoal();
+ if(!beers.length){
+   $("latest").innerHTML='<div class="latestphoto">🍺<br><br>Your first beer will appear here.</div>';
+   $("latestHint").textContent="None yet";
+   $("history").innerHTML='<div class="empty" style="grid-column:1/-1">Your beer history will appear here.<br>Tap <b>ADD BEER</b> to start.</div>';
+   $("statSpan").textContent="—";return;
+ }
+ const last=beers.length-1,b=beers[last];
+ $("latestHint").textContent=`Beer #${beers.length} · ${time(b.time)}`;
+ $("latest").innerHTML=`
+   <div class="latestphoto" onclick="photo('${b.id}')">
+     ${b.photo?`<img src="${b.photo}" alt="Latest beer">`:`🍺<br><br>Tap to add a photo`}
+   </div>
+   <div class="latestinfo">
+     <div><div class="latesttitle">Beer #${beers.length}</div><div class="latestmeta">${day(b.time)} · ${fullTime(b.time)}</div></div>
+     <button class="photoBtn" onclick="photo('${b.id}')">📷 ${b.photo?"Change":"Add"} Photo</button>
+   </div>`;
+ $("history").innerHTML=beers.map((b,i)=>`<article class="item">
+     <div class="itemphoto" onclick="photo('${b.id}')">${b.photo?`<img src="${b.photo}" alt="Beer ${i+1}" loading="lazy">`:`📷<br>Add photo`}</div>
+     <div class="itembody"><div class="itemtop"><span>Beer #${i+1}</span><button class="del" onclick="removeBeer('${b.id}')">×</button></div>
+     <div class="itemtime">${time(b.time)} · ${day(b.time)}</div></div>
+   </article>`).reverse().join("");
+ const span=Math.round((beers[last].time-beers[0].time)/60000);
+ $("statSpan").textContent=beers.length>1?(span<60?span+"m":Math.floor(span/60)+"h "+(span%60)+"m"):"—";
+}
+boot();
+</script>
+</body>
+</html>
