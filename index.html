@@ -155,7 +155,15 @@ input{display:none}
    3. Host on GitHub Pages and drop the link in WhatsApp.
       Optional: add ?room=name to the link for a separate counter.
    ============================================================ */
-const FIREBASE_CONFIG = null;
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyBr8bp52QkZ0VgBnAxwA4EYnzw3ZtTDJCQ",
+  authDomain: "the-lounge-nfl-predictions.firebaseapp.com",
+  databaseURL: "https://the-lounge-nfl-predictions-default-rtdb.firebaseio.com",
+  projectId: "the-lounge-nfl-predictions",
+  storageBucket: "the-lounge-nfl-predictions.firebasestorage.app",
+  messagingSenderId: "728931934835",
+  appId: "1:728931934835:web:ac97df4d68e7bd901f8006"
+};
 
 const ROOM=((new URLSearchParams(location.search).get("room")||"the-lounge").toLowerCase().replace(/[^a-z0-9_-]/g,""))||"the-lounge";
 const PATH="beer-counter/"+ROOM+"/beers";
