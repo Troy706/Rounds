@@ -2,77 +2,129 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#120d08">
 <title>Rounds • Night Tracker</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍺</text></svg>">
 <style>
-:root{--bg:#120d08;--card:#21170e;--card2:#2b1e12;--gold:#f5b83d;--gold2:#ffd66f;--cream:#fff6e7;--muted:#b9a58d;--line:#49331d;--red:#d96d5d}
+:root{--bg:#120d08;--card:#21170e;--card2:#2b1e12;--gold:#f5b83d;--gold2:#ffd66f;--cream:#fff6e7;--muted:#b9a58d;--line:#49331d;--red:#d96d5d;--green:#8fd18b}
 *{box-sizing:border-box}
-body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% -10%,#513619 0,#21150b 32%,#120d08 68%);color:var(--cream);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-.app{max-width:560px;margin:auto;padding:18px 15px 42px}
+[hidden]{display:none!important}
+body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% -10%,#513619 0,#21150b 32%,#120d08 68%);color:var(--cream);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding-bottom:env(safe-area-inset-bottom,0px)}
+.app{max-width:560px;margin:auto;padding:calc(18px + env(safe-area-inset-top,0px)) 15px 42px}
 header{text-align:center;padding:6px 0 15px}
 .logo{font-size:18px;font-weight:800;letter-spacing:3px;color:var(--gold)}
 h1{font-size:31px;margin:3px 0 0;letter-spacing:-1px}
 .subtitle{color:var(--muted);font-size:13px;margin-top:4px}
+button{font:inherit;font-weight:800;border:0;cursor:pointer;border-radius:15px;padding:14px 10px;color:inherit}
+select,.txt{font:inherit;color:var(--cream);background:#1b120b;border:1px solid var(--line);border-radius:12px;padding:12px;width:100%;font-size:16px;color-scheme:dark}
+select:focus,.txt:focus{outline:none;border-color:var(--gold)}
+.hide{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+
+/* who am I */
+.me{display:flex;align-items:center;gap:10px;margin:0 0 12px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:8px 8px 8px 14px}
+.me label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;white-space:nowrap}
+.me select{border:0;background:#2b1e12;font-weight:800;padding:10px}
+
 .hero{border:1px solid var(--line);border-radius:26px;background:linear-gradient(145deg,#342313,#1b120b);padding:18px;box-shadow:0 18px 45px #0008}
 .topline{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:1.5px}
 .countrow{display:flex;align-items:center;justify-content:center;gap:13px;margin:5px 0}
 .mug{font-size:45px}.count{font-size:92px;line-height:1;font-weight:850;color:var(--gold2)}
 .time{text-align:center;font-size:23px;font-weight:700}.date{text-align:center;color:var(--muted);font-size:13px;margin-top:2px}
 .buttons{display:grid;grid-template-columns:1fr;gap:10px;margin-top:17px}
-button{font:inherit;font-weight:800;border:0;cursor:pointer;border-radius:15px;padding:14px 10px}
-.add{background:var(--gold);color:#201307;box-shadow:0 8px 22px #f5b83d35}.share{background:#f2e9dc;color:#1b120b}
+.add{background:var(--gold);color:#201307;box-shadow:0 8px 22px #f5b83d35}
 .reset{display:block;margin:10px auto 0;background:transparent;color:#a99680;font-size:12px;padding:6px}
-.latest{margin-top:18px}
+
+.block{margin-top:22px}
 .sectionhead{display:flex;justify-content:space-between;align-items:end;margin:0 3px 9px}
 .sectionhead h2{font-size:18px;margin:0}.sectionhead span{font-size:12px;color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px}
+.empty{padding:26px 15px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:17px;font-size:14px}
+
+/* live games */
+.games{display:grid;gap:10px}
+.game{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:14px 16px}
+.gtop{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.gname{font-weight:850;font-size:18px;min-width:0;overflow-wrap:anywhere}
+.gtimer{font-size:28px;font-weight:850;color:var(--gold2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.gmembers{font-size:12px;color:var(--muted);margin-top:2px}
+.goalprog{display:flex;justify-content:space-between;align-items:baseline;margin-top:10px;font-weight:800}
+.goalprog b{font-size:22px;color:var(--gold2)}
+.bar{height:12px;border-radius:8px;background:#1b120b;border:1px solid var(--line);overflow:hidden;margin-top:6px}
+.bar span{display:block;height:100%;background:linear-gradient(90deg,#d9861a,var(--gold2));transition:width .4s}
+.gfoot{display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:12px;color:var(--muted)}
+.gcancel{background:transparent;color:#907b63;font-size:12px;padding:4px 0;text-decoration:underline;text-underline-offset:3px}
+
+/* start form */
+.seg{display:grid;grid-template-columns:repeat(3,1fr);background:#1b120b;border:1px solid var(--line);border-radius:14px;padding:4px;gap:4px}
+.seg button{padding:10px 4px;border-radius:10px;background:transparent;color:var(--muted);font-size:14px}
+.seg button[aria-pressed="true"]{background:var(--gold);color:#201307}
+.fld{display:block;margin-top:12px}
+.fld>span,.goalform label{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px}
+.goalform{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:12px}
+.goalform input{text-align:center;font-size:20px;font-weight:800}
+.rule{margin-top:12px;font-size:13px;color:var(--gold2);background:#2b1e12;border-radius:10px;padding:9px 11px}
+.rule.warn{color:var(--red)}
+.goalbtn{width:100%;margin-top:12px;background:var(--gold);color:#201307}
+
+/* players / teams */
+.plist{list-style:none;margin:0;padding:0}
+.plist li{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.plist li:last-child{border-bottom:0}
+.pmain{flex:1;min-width:0}
+.pname{font-weight:800;overflow-wrap:anywhere}
+.pname small{font-weight:600;color:var(--gold);font-size:11px;margin-left:4px}
+.psub{font-size:12px;color:var(--muted);margin-top:1px}
+.pnum{font-weight:850;font-size:20px;color:var(--gold2);text-align:right;min-width:36px}
+.pnum small{display:block;font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1px}
+.del{background:transparent;color:#907b63;padding:2px 5px;font-size:17px}
+.addrow{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:12px}
+.addrow button,.smallbtn{background:#3a2919;color:#ffe8b6;padding:12px 16px;font-size:14px}
+details.teamform{margin-top:12px}
+details.teamform summary{cursor:pointer;color:var(--gold);font-weight:800;padding:6px 0;list-style:none}
+details.teamform summary::-webkit-details-marker{display:none}
+.pick{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.pick label{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:7px 12px;font-size:14px;font-weight:700;cursor:pointer}
+.pick input{accent-color:var(--gold)}
+.pick label:has(input:checked){background:var(--gold);color:#201307;border-color:var(--gold)}
+
+/* finished */
+.flist{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.flist li{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 14px}
+.fres{font-weight:850;white-space:nowrap}
+.fres.won{color:var(--green)}.fres.lost{color:var(--red)}.fres.cancelled{color:var(--muted)}
+
+/* beer log */
 .latestcard{background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden}
-.latestphoto{height:245px;background:#302014;display:flex;align-items:center;justify-content:center;color:#8e7c66;font-size:14px;text-align:center}
+.latestphoto{height:245px;background:#302014;display:flex;align-items:center;justify-content:center;color:#8e7c66;font-size:14px;text-align:center;cursor:pointer}
 .latestphoto img{width:100%;height:100%;object-fit:cover}
-.latestinfo{padding:14px 16px;display:flex;justify-content:space-between;align-items:center}
+.latestinfo{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px}
 .latesttitle{font-weight:850;font-size:20px}.latestmeta{font-size:13px;color:var(--muted);margin-top:2px}
-.photoBtn{background:#3a2919;color:#ffe8b6;padding:10px 13px;font-size:13px}
-.history{margin-top:22px}
+.photoBtn{background:#3a2919;color:#ffe8b6;padding:10px 13px;font-size:13px;white-space:nowrap}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .item{background:var(--card);border:1px solid var(--line);border-radius:17px;overflow:hidden}
-.itemphoto{height:145px;background:#302014;display:flex;align-items:center;justify-content:center;color:#8e7c66;font-size:12px;text-align:center}
+.itemphoto{height:145px;background:#302014;display:flex;align-items:center;justify-content:center;color:#8e7c66;font-size:12px;text-align:center;cursor:pointer}
 .itemphoto img{width:100%;height:100%;object-fit:cover}
 .itembody{padding:10px 11px}.itemtop{display:flex;justify-content:space-between;font-weight:800}
+.itemwho{font-size:13px;font-weight:700;color:var(--gold);margin-top:2px;overflow-wrap:anywhere}
 .itemtime{color:var(--muted);font-size:12px;margin-top:3px}
-.del{background:transparent;color:#907b63;padding:2px 5px;font-size:15px}
-.empty{padding:35px 15px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:17px}
+.timeedit{background:transparent;color:var(--muted);font:inherit;font-weight:400;padding:0;border-radius:6px;text-align:left;text-decoration:underline dotted;text-underline-offset:3px}
+.timeedit:hover{color:var(--gold2)}
 .stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:17px}
 .stat{background:#1b120b;border:1px solid var(--line);border-radius:15px;padding:11px;text-align:center}
 .stat b{display:block;font-size:20px;color:var(--gold2)}.stat span{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
-.goal{margin-top:18px}
-.goalcard{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px}
-.goalform{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
-.goalform label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
-.goal input{display:block;width:100%;margin-top:5px;padding:12px;border-radius:12px;border:1px solid var(--line);background:#1b120b;color:var(--cream);font:inherit;font-size:20px;font-weight:800;text-align:center}
-.goal input:focus{outline:none;border-color:var(--gold)}
-.goalbtn{width:100%;margin-top:12px;background:var(--gold);color:#201307}
-.goalreset{width:100%;margin-top:12px;background:#3a2919;color:#ffe8b6}
-.goaltimer{text-align:center;font-size:44px;font-weight:850;font-variant-numeric:tabular-nums;color:var(--gold2);line-height:1.1}
-.goaltimer.done{color:var(--red)}
-.goalsub{text-align:center;color:var(--muted);font-size:13px;margin-top:2px}
-.goalprog{display:flex;justify-content:space-between;align-items:baseline;margin-top:14px;font-weight:800}
-.goalprog b{font-size:24px;color:var(--gold2)}
-.bar{height:14px;border-radius:8px;background:#1b120b;border:1px solid var(--line);overflow:hidden;margin-top:6px}
-.bar span{display:block;height:100%;width:0;background:linear-gradient(90deg,#d9861a,var(--gold2));transition:width .4s}
-.goalhit{color:#8fd18b}
-.timeedit{background:transparent;color:var(--muted);font:inherit;font-weight:400;padding:0;border-radius:6px;text-align:left;text-decoration:underline dotted;text-underline-offset:3px}
-.timeedit:hover{color:var(--gold2)}
+.foot{text-align:center;color:#756451;font-size:11px;margin-top:20px}
+
 dialog.timedlg{border:1px solid var(--line);border-radius:20px;background:var(--card);color:var(--cream);padding:20px;width:min(360px,92vw)}
 dialog.timedlg::backdrop{background:#000a}
 .timedlg h3{margin:0 0 4px;font-size:20px}
-.timedlg p{margin:0 0 14px;color:var(--muted);font-size:13px}
-.timedlg input{display:block;width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);background:#1b120b;color:var(--cream);font:inherit;font-size:17px;color-scheme:dark}
 .timedlg .row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
 .timedlg .cancel{background:#3a2919;color:#ffe8b6}
 .timedlg .save{background:var(--gold);color:#201307}
-.foot{text-align:center;color:#756451;font-size:11px;margin-top:20px}
-input{display:none}
-@media(max-width:390px){.count{font-size:78px}.latestphoto{height:210px}.itemphoto{height:120px}}
+
+.toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top,0px));transform:translate(-50%,-160%);z-index:20;background:var(--cream);color:#201307;font-weight:800;padding:10px 18px;border-radius:999px;box-shadow:0 8px 24px #000a;transition:transform .35s;max-width:92vw;text-align:center;font-size:14px}
+.toast.show{transform:translate(-50%,0)}
+@media(max-width:390px){.count{font-size:78px}.latestphoto{height:210px}.itemphoto{height:120px}.gtimer{font-size:24px}}
 </style>
 </head>
 <body>
@@ -80,8 +132,13 @@ input{display:none}
 <header>
   <div class="logo">BEER NIGHT</div>
   <h1>🍺 Rounds</h1>
-  <div class="subtitle">Track the night. One beer at a time.</div>
+  <div class="subtitle">Track the night. One round at a time.</div>
 </header>
+
+<div class="me">
+  <label for="meSelect">Drinking as</label>
+  <select id="meSelect" onchange="pickMe(this.value)"></select>
+</div>
 
 <section class="hero">
   <div class="topline"><span>Tonight's Count</span><span id="session">Ready</span></div>
@@ -89,134 +146,161 @@ input{display:none}
   <div class="time" id="clock">--:--:-- --</div>
   <div class="date" id="date">---</div>
   <div class="buttons">
-    <button class="add" onclick="addBeer()">🍺 ADD BEER</button>
+    <button class="add" id="addBtn" onclick="addBeer()">🍺 ADD BEER</button>
   </div>
-  <button class="reset" onclick="resetAll()">Reset tonight's count</button>
+  <button class="reset" onclick="resetNight()">Start a fresh night</button>
 </section>
 
-<section class="goal">
-  <div class="sectionhead"><h2>Goal</h2><span id="goalStatus">Not started</span></div>
-  <div class="goalcard">
-    <div id="goalSetup">
-      <div class="goalform">
-        <label>Beers<input id="goalBeers" type="number" min="1" max="99" value="10" inputmode="numeric"></label>
-        <label>Hours<input id="goalHours" type="number" min="0" max="48" value="3" inputmode="numeric"></label>
-        <label>Minutes<input id="goalMins" type="number" min="0" max="59" value="0" inputmode="numeric"></label>
-      </div>
-      <button class="goalbtn" onclick="startGoal()">⏱ START TIMER</button>
+<section class="block">
+  <div class="sectionhead"><h2>Live Games</h2><span id="liveCount">None running</span></div>
+  <div class="games" id="liveGames"></div>
+</section>
+
+<section class="block">
+  <div class="sectionhead"><h2>Start a Game</h2><span>Set a goal, beat the clock</span></div>
+  <div class="card">
+    <div class="seg" role="group" aria-label="Game type">
+      <button data-kind="solo" aria-pressed="true" onclick="setKind('solo')">👤 Solo</button>
+      <button data-kind="team" aria-pressed="false" onclick="setKind('team')">👥 Team</button>
+      <button data-kind="group" aria-pressed="false" onclick="setKind('group')">🌍 Everyone</button>
     </div>
-    <div id="goalLive" hidden>
-      <div class="goaltimer" id="goalTimer">0:00:00</div>
-      <div class="goalsub" id="goalSub">left on the clock</div>
-      <div class="goalprog"><span id="goalMsg">Progress</span><span><b id="goalDone">0</b> / <span id="goalTarget">0</span></span></div>
-      <div class="bar"><span id="goalBar"></span></div>
-      <button class="goalreset" onclick="resetGoal()">↺ RESET TIMER</button>
+    <label class="fld" id="ownerWrap"><span id="ownerLabel">Player</span>
+      <select id="ownerSelect" onchange="ownerChanged()"></select>
+    </label>
+    <div class="goalform">
+      <label>Beers<input class="txt" id="goalBeers" type="number" min="1" max="99" value="5" inputmode="numeric"></label>
+      <label>Hours<input class="txt" id="goalHours" type="number" min="0" max="24" value="2" inputmode="numeric"></label>
+      <label>Minutes<input class="txt" id="goalMins" type="number" min="0" max="59" value="0" inputmode="numeric"></label>
+    </div>
+    <div class="rule" id="ruleHint"></div>
+    <button class="goalbtn" onclick="startGame()">⏱ START GAME</button>
+  </div>
+</section>
+
+<section class="block">
+  <div class="sectionhead"><h2>Players</h2><span id="playerCount">0 players</span></div>
+  <div class="card">
+    <ul class="plist" id="players"></ul>
+    <div class="addrow">
+      <input class="txt" id="newPlayer" maxlength="20" placeholder="Add a player" onkeydown="if(event.key==='Enter')addPlayerFromInput()">
+      <button onclick="addPlayerFromInput()">Add</button>
     </div>
   </div>
 </section>
 
-<section class="latest">
+<section class="block">
+  <div class="sectionhead"><h2>Teams</h2><span id="teamCount">0 teams</span></div>
+  <div class="card">
+    <ul class="plist" id="teams"></ul>
+    <details class="teamform" id="teamForm">
+      <summary>+ Create a team</summary>
+      <input class="txt" id="teamName" maxlength="24" placeholder="Team name" style="margin-top:8px">
+      <div class="pick" id="teamPick"></div>
+      <button class="smallbtn" onclick="createTeam()">Create team</button>
+    </details>
+  </div>
+</section>
+
+<section class="block">
+  <div class="sectionhead"><h2>Finished Games</h2><span id="finCount"></span></div>
+  <ul class="flist" id="finished"></ul>
+</section>
+
+<section class="block">
   <div class="sectionhead"><h2>Latest Beer</h2><span id="latestHint">None yet</span></div>
   <div class="latestcard" id="latest"></div>
 </section>
 
-<section class="history">
+<section class="block">
   <div class="sectionhead"><h2>Beer History</h2><span id="total">0 beers</span></div>
   <div class="grid" id="history"></div>
 </section>
 
 <div class="stats">
   <div class="stat"><b id="statCount">0</b><span>Beers</span></div>
-  <div class="stat"><b id="statSpan">—</b><span>First → Last</span></div>
+  <div class="stat"><b id="statWins">0</b><span>Games Won</span></div>
   <div class="stat"><b id="statPhotos">0</b><span>Photos</span></div>
 </div>
 <div class="foot" id="foot">Connecting…</div>
 </div>
 
-<dialog class="timedlg" id="timeDlg">
-  <h3 id="timeTitle">Edit time</h3>
-  <p>Set when this beer actually happened.</p>
-  <input type="datetime-local" id="timeInput" step="60">
+<dialog class="timedlg" id="editDlg">
+  <h3 id="editTitle">Edit beer</h3>
+  <label class="fld"><span>Who drank it</span><select id="editWho"></select></label>
+  <label class="fld"><span>When</span><input class="txt" type="datetime-local" id="editTime" step="60"></label>
   <div class="row">
-    <button class="cancel" onclick="$('timeDlg').close()">Cancel</button>
-    <button class="save" onclick="saveTime()">Save</button>
+    <button class="cancel" onclick="$('editDlg').close()">Cancel</button>
+    <button class="save" onclick="saveEdit()">Save</button>
   </div>
 </dialog>
 
-<input id="photoInput" type="file" accept="image/*" capture="environment">
+<input id="photoInput" class="hide" type="file" accept="image/*" capture="environment">
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+<!-- Firebase config lives in config.js so updating this file never wipes it -->
+<script src="config.js"></script>
 <script>
 /* ============================================================
-   SETUP (same as The Lounge NFL app)
-   1. Paste your Firebase web config below (you can reuse the
-      Lounge Firebase project). Leave null = this-phone-only mode.
-   2. Realtime Database rules, add alongside your existing ones:
-        "beer-counter": { ".read": true, ".write": true }
-   3. Host on GitHub Pages and drop the link in WhatsApp.
-      Optional: add ?room=name to the link for a separate counter.
+   SETUP: put a file called config.js next to this one containing
+     window.FIREBASE_CONFIG = { apiKey:"...", databaseURL:"...", ... };
    ============================================================ */
-const FIREBASE_CONFIG = {
-  apiKey: "AIzaSyBr8bp52QkZ0VgBnAxwA4EYnzw3ZtTDJCQ",
-  authDomain: "the-lounge-nfl-predictions.firebaseapp.com",
-  databaseURL: "https://the-lounge-nfl-predictions-default-rtdb.firebaseio.com",
-  projectId: "the-lounge-nfl-predictions",
-  storageBucket: "the-lounge-nfl-predictions.firebasestorage.app",
-  messagingSenderId: "728931934835",
-  appId: "1:728931934835:web:ac97df4d68e7bd901f8006"
-};
+const FIREBASE_CONFIG = window.FIREBASE_CONFIG || null;
 
 const ROOM=((new URLSearchParams(location.search).get("room")||"the-lounge").toLowerCase().replace(/[^a-z0-9_-]/g,""))||"the-lounge";
-const PATH="beer-counter/"+ROOM+"/beers";
+const ROOT="beer-counter/"+ROOM;
+const COLS=["players","teams","games","beers"];
+const STEP=30*60000;      // each win cuts the next time limit by 30 min
+const FLOOR=15*60000;     // shortest time limit allowed
+const ICON={solo:"👤",team:"👥",group:"🌍"};
 
-let beers=[];          // [{id,time,photo}] sorted oldest -> newest
-let pending=null;      // id of the beer waiting for a photo
-let db=null, offset=0;
-let goal=null;         // {target, startedAt, endsAt}
-const GOAL_PATH="beer-counter/"+ROOM+"/goal";
-const GKEY="beerCounter_goal:"+ROOM;
+let data={players:{},teams:{},games:{},beers:{}};
+let db=null, offset=0, booted=false, kind="solo", pending=null, editingId=null;
+let me=localStorage.getItem("rounds:me:"+ROOM)||"";
+let lastStatus={}, lastSig="";
+
 const now=()=>Date.now()+offset;
-
 const $=id=>document.getElementById(id);
-function time(ts){return new Date(ts).toLocaleTimeString([],{hour:"numeric",minute:"2-digit"})}
-function fullTime(ts){return new Date(ts).toLocaleTimeString([],{hour:"numeric",minute:"2-digit",second:"2-digit"})}
-function day(ts){return new Date(ts).toLocaleDateString([],{weekday:"short",month:"short",day:"numeric"})}
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const time=ts=>new Date(ts).toLocaleTimeString([],{hour:"numeric",minute:"2-digit"});
+const fullTime=ts=>new Date(ts).toLocaleTimeString([],{hour:"numeric",minute:"2-digit",second:"2-digit"});
+const day=ts=>new Date(ts).toLocaleDateString([],{weekday:"short",month:"short",day:"numeric"});
+function fmtClock(ms){const s=Math.ceil(ms/1000);return Math.floor(s/3600)+":"+String(Math.floor(s%3600/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
+function fmtDur(ms){const m=Math.round(ms/60000),h=Math.floor(m/60),r=m%60;return h&&r?`${h}h ${r}m`:h?`${h}h`:`${r}m`}
+let toastT;function toast(m){const t=$("toast");t.textContent=m;t.classList.add("show");clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("show"),3000)}
 
 function clock(){
  const d=new Date();
  $("clock").textContent=d.toLocaleTimeString([],{hour:"numeric",minute:"2-digit",second:"2-digit"});
  $("date").textContent=d.toLocaleDateString([],{weekday:"long",month:"long",day:"numeric"});
 }
-setInterval(clock,1000);clock();
 
-/* ---------- storage: Firebase (shared) or local (fallback) ---------- */
-const LKEY="beerCounter_v2:"+ROOM;
-function localRead(){try{return JSON.parse(localStorage.getItem(LKEY))||{}}catch(e){return {}}}
-function localWrite(o){try{localStorage.setItem(LKEY,JSON.stringify(o))}catch(e){alert("Phone storage is full. Remove a few photos.")}}
-function apply(obj){
- beers=Object.entries(obj||{}).map(([id,b])=>({id,...b})).sort((a,b)=>a.time-b.time);
- render();
-}
+/* ---------------- storage ---------------- */
+const LKEY="rounds:"+ROOM;
+function localLoad(){try{const o=JSON.parse(localStorage.getItem(LKEY))||{};COLS.forEach(c=>data[c]=o[c]||{})}catch(e){}}
+function localSave(){try{localStorage.setItem(LKEY,JSON.stringify(data))}catch(e){toast("Phone storage is full. Remove a few photos.")}}
+const uid=()=>"x"+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+function fail(e){console.error(e);toast("Couldn't save that. Check your connection.")}
 const store={
- add(b){
-  if(db) return db.ref(PATH).push(b).key;
-  const o=localRead(),id="b"+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
-  o[id]=b;localWrite(o);apply(o);return id;
+ add(col,obj){
+  if(db){const r=db.ref(`${ROOT}/${col}`).push();r.set(obj).catch(fail);return r.key}
+  const id=uid();data[col][id]=obj;localSave();renderAll();return id;
  },
- update(id,patch){
-  if(db) return db.ref(PATH+"/"+id).update(patch).catch(()=>alert("Couldn't save the photo. Check your connection."));
-  const o=localRead();if(o[id])Object.assign(o[id],patch);localWrite(o);apply(o);
+ update(col,id,p){
+  if(db)return db.ref(`${ROOT}/${col}/${id}`).update(p).catch(fail);
+  if(data[col][id]){Object.assign(data[col][id],p);Object.keys(p).forEach(k=>p[k]===null&&delete data[col][id][k]);localSave();renderAll()}
  },
- remove(id){
-  if(db) return db.ref(PATH+"/"+id).remove();
-  const o=localRead();delete o[id];localWrite(o);apply(o);
+ remove(col,id){
+  if(db)return db.ref(`${ROOT}/${col}/${id}`).remove().catch(fail);
+  delete data[col][id];localSave();renderAll();
  },
- clear(){
-  if(db) return db.ref(PATH).remove();
-  localWrite({});apply({});
+ clear(col){
+  if(db)return db.ref(`${ROOT}/${col}`).remove().catch(fail);
+  data[col]={};localSave();renderAll();
  }
 };
 function loadScript(src){return new Promise((res,rej)=>{const s=document.createElement("script");s.src=src;s.onload=res;s.onerror=rej;document.head.appendChild(s)})}
 async function boot(){
+ clock();setInterval(()=>{clock();tick()},1000);
  if(FIREBASE_CONFIG){
   try{
    const v="10.12.2";
@@ -225,141 +309,308 @@ async function boot(){
    firebase.initializeApp(FIREBASE_CONFIG);
    db=firebase.database();
    db.ref(".info/serverTimeOffset").on("value",s=>offset=s.val()||0);
-   db.ref(PATH).on("value",s=>apply(s.val()));
-   db.ref(GOAL_PATH).on("value",s=>{goal=s.val();renderGoal()});
+   const loaded=new Set();
+   COLS.forEach(c=>db.ref(`${ROOT}/${c}`).on("value",s=>{
+    data[c]=s.val()||{};loaded.add(c);
+    if(loaded.size===COLS.length){booted=true;renderAll()}
+   }));
    $("foot").textContent="Live for everyone with the link 🍻";
    return;
   }catch(e){console.error(e);db=null}
  }
- $("foot").textContent="Your log stays on this device. Add Firebase to share it live.";
- apply(localRead());
- try{goal=JSON.parse(localStorage.getItem(GKEY))}catch(e){goal=null}
- renderGoal();
+ $("foot").textContent="Your log stays on this device. Add config.js to share it live.";
+ localLoad();booted=true;renderAll();
 }
 
-/* ---------- goal timer ---------- */
-function saveGoal(g){
- if(db) return db.ref(GOAL_PATH).set(g).catch(()=>alert("Couldn't update the goal. Check your connection."));
- goal=g;if(g)localStorage.setItem(GKEY,JSON.stringify(g));else localStorage.removeItem(GKEY);renderGoal();
-}
-function startGoal(){
- const target=parseInt($("goalBeers").value,10);
- const ms=((parseInt($("goalHours").value,10)||0)*60+(parseInt($("goalMins").value,10)||0))*60000;
- if(!(target>0)){alert("Set a goal of at least 1 beer.");return}
- if(ms<60000){alert("Set the timer for at least 1 minute.");return}
- const t=now();
- saveGoal({target,startedAt:t,endsAt:t+ms});
-}
-function resetGoal(){
- if(confirm("Reset the goal timer for everyone? Your beer log stays."))saveGoal(null);
-}
-function fmtClock(ms){
- const s=Math.ceil(ms/1000);
- return Math.floor(s/3600)+":"+String(Math.floor(s%3600/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");
-}
-function renderGoal(){
- const live=!!(goal&&goal.endsAt);
- $("goalSetup").hidden=live;$("goalLive").hidden=!live;
- if(!live){$("goalStatus").textContent="Not started";return}
- const t=now(),left=Math.max(0,goal.endsAt-t);
- const done=beers.filter(b=>b.time>=goal.startedAt&&b.time<=goal.endsAt).length;
- const hit=done>=goal.target,over=left===0;
- $("goalTimer").textContent=over?"Time's up":fmtClock(left);
- $("goalTimer").classList.toggle("done",over);
- $("goalSub").textContent=over?(hit?"Goal smashed 🍻":"Missed it by "+(goal.target-done)):"left on the clock · ends "+time(goal.endsAt);
- $("goalDone").textContent=done;$("goalTarget").textContent=goal.target;
- $("goalBar").style.width=Math.min(100,done/goal.target*100)+"%";
- const msg=$("goalMsg");
- msg.className=hit?"goalhit":"";
- msg.textContent=hit?"🏆 Goal hit!":(goal.target-done)+" to go";
- $("goalStatus").textContent=over?"Finished":hit?"Goal hit!":"Running";
-}
-setInterval(renderGoal,1000);
+/* ---------------- derived data ---------------- */
+const list=col=>Object.entries(data[col]||{}).map(([id,v])=>({id,...v}));
+const beersSorted=()=>list("beers").filter(b=>typeof b.time==="number").sort((a,b)=>a.time-b.time);
+const playersSorted=()=>list("players").sort((a,b)=>a.name.localeCompare(b.name));
+const teamsSorted=()=>list("teams").sort((a,b)=>a.name.localeCompare(b.name));
+const pname=id=>data.players[id]?.name||"Unassigned";
+const keyFor=(k,owner)=>k==="group"?"group":(k==="team"?"t:":"p:")+owner;
+const ownerKey=g=>keyFor(g.kind,g.ownerId);
+function ownerName(k,owner){return k==="group"?"Everyone":k==="team"?(data.teams[owner]?.name||"Deleted team"):pname(owner)}
 
-/* ---------- photos: shrink before saving so they sync fast ---------- */
+function gameStats(g,beers){
+ const mem=g.kind==="group"?null:new Set(Object.keys(g.members||{}));
+ const hits=beers.filter(b=>b.time>=g.startedAt&&b.time<=g.endsAt&&(!mem||mem.has(b.playerId)));
+ const done=hits.length;
+ const status=g.cancelled?"cancelled":done>=g.target?"won":now()>=g.endsAt?"lost":"live";
+ return {done,status,finishedAt:status==="won"?hits[g.target-1].time:null};
+}
+function allGames(){
+ const bs=beersSorted();
+ return list("games").map(g=>({...g,...gameStats(g,bs)})).sort((a,b)=>b.startedAt-a.startedAt);
+}
+// Ladder rule: the next time limit must be 30 min shorter than the most recent win's limit
+function limitFor(key,games){
+ const win=games.find(g=>ownerKey(g)===key&&g.status==="won");
+ return win?{prev:win.durationMs,max:Math.max(FLOOR,win.durationMs-STEP)}:null;
+}
+const winsFor=(key,games)=>games.filter(g=>ownerKey(g)===key&&g.status==="won").length;
+
+/* ---------------- render ---------------- */
+function renderAll(){
+ if(!booted)return;
+ const beers=beersSorted(),games=allGames();
+ statusToasts(games);
+ lastSig=games.map(g=>g.id+g.status).join("|");
+ renderMe();renderHero(beers,games);renderLive(games);renderForm(games);
+ renderPlayers(beers,games);renderTeams(games);renderFinished(games);renderLog(beers);
+ $("statWins").textContent=games.filter(g=>g.status==="won").length;
+}
+function statusToasts(games){
+ games.forEach(g=>{
+  const was=lastStatus[g.id];
+  if(was==="live"&&g.status==="won")toast(`🏆 ${ownerName(g.kind,g.ownerId)} hit ${g.target} in ${fmtDur(g.finishedAt-g.startedAt)}!`);
+  if(was==="live"&&g.status==="lost")toast(`⏰ Time's up for ${ownerName(g.kind,g.ownerId)}: ${g.done}/${g.target}`);
+  lastStatus[g.id]=g.status;
+ });
+}
+function tick(){
+ if(!booted)return;
+ const games=allGames();
+ if(games.map(g=>g.id+g.status).join("|")!==lastSig){renderAll();return}
+ document.querySelectorAll("[data-timer]").forEach(el=>{
+  const g=data.games[el.dataset.timer];if(g)el.textContent=fmtClock(Math.max(0,g.endsAt-now()));
+ });
+}
+function renderMe(){
+ const ps=playersSorted();
+ if(me&&!data.players[me]){me="";localStorage.removeItem("rounds:me:"+ROOM)}
+ $("meSelect").innerHTML=`<option value="">Pick your name…</option>`+
+  ps.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join("")+
+  `<option value="__new">+ New player…</option>`;
+ $("meSelect").value=me;
+ $("addBtn").textContent=me?`🍺 ADD BEER · ${pname(me).toUpperCase()}`:"🍺 ADD BEER";
+}
+function renderHero(beers,games){
+ $("count").textContent=beers.length;
+ const live=games.filter(g=>g.status==="live").length;
+ $("session").textContent=live?`${live} game${live>1?"s":""} live`:beers.length?"In progress":"Ready";
+}
+function renderLive(games){
+ const live=games.filter(g=>g.status==="live");
+ $("liveCount").textContent=live.length?`${live.length} running`:"None running";
+ if(!live.length){$("liveGames").innerHTML='<div class="empty">No games running. Start one below.</div>';return}
+ $("liveGames").innerHTML=live.map(g=>{
+  const members=g.kind==="team"?Object.keys(g.members||{}).map(pname).join(", "):"";
+  return `<article class="game">
+   <div class="gtop"><span class="gname">${ICON[g.kind]} ${esc(ownerName(g.kind,g.ownerId))}</span>
+    <span class="gtimer" data-timer="${g.id}">${fmtClock(Math.max(0,g.endsAt-now()))}</span></div>
+   ${members?`<div class="gmembers">${esc(members)}</div>`:""}
+   <div class="goalprog"><span>${g.target-g.done} to go</span><span><b>${g.done}</b> / ${g.target}</span></div>
+   <div class="bar"><span style="width:${Math.min(100,g.done/g.target*100)}%"></span></div>
+   <div class="gfoot"><span>Limit ${fmtDur(g.durationMs)} · ends ${time(g.endsAt)}</span>
+    <button class="gcancel" onclick="cancelGame('${g.id}')">Cancel</button></div>
+  </article>`}).join("");
+}
+function setKind(k){
+ kind=k;
+ document.querySelectorAll(".seg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.kind===k));
+ renderForm(allGames());ownerChanged();
+}
+function renderForm(games){
+ const sel=$("ownerSelect"),prev=sel.value;
+ const opts=kind==="solo"?playersSorted():kind==="team"?teamsSorted():[];
+ $("ownerWrap").hidden=kind==="group";
+ $("ownerLabel").textContent=kind==="team"?"Team":"Player";
+ sel.innerHTML=opts.map(o=>`<option value="${o.id}">${esc(o.name)}</option>`).join("");
+ if(opts.some(o=>o.id===prev))sel.value=prev;
+ else if(kind==="solo"&&me&&data.players[me])sel.value=me;
+ updateRule(games);
+}
+const currentOwner=()=>kind==="group"?"group":$("ownerSelect").value;
+function updateRule(games=allGames()){
+ const h=$("ruleHint"),owner=currentOwner();h.className="rule";
+ if(!owner){h.className="rule warn";h.textContent=kind==="team"?"Create a team below first.":"Add a player below first.";return}
+ const key=keyFor(kind,owner);
+ if(games.some(g=>ownerKey(g)===key&&g.status==="live")){h.className="rule warn";h.textContent="⏳ Already has a game running.";return}
+ const lim=limitFor(key,games);
+ h.textContent=lim?`🔥 Last win had a ${fmtDur(lim.prev)} limit, so this one has to be ${fmtDur(lim.max)} or less.`:"No wins yet, so any time limit works.";
+}
+function ownerChanged(){
+ const games=allGames(),owner=currentOwner();
+ updateRule(games);
+ if(!owner)return;
+ const lim=limitFor(keyFor(kind,owner),games);
+ if(lim&&formMs()>lim.max){$("goalHours").value=Math.floor(lim.max/3.6e6);$("goalMins").value=Math.round(lim.max%3.6e6/60000)}
+}
+const formMs=()=>((parseInt($("goalHours").value,10)||0)*60+(parseInt($("goalMins").value,10)||0))*60000;
+
+function renderPlayers(beers,games){
+ const ps=playersSorted().map(p=>({...p,n:beers.filter(b=>b.playerId===p.id).length})).sort((a,b)=>b.n-a.n||a.name.localeCompare(b.name));
+ $("playerCount").textContent=`${ps.length} player${ps.length===1?"":"s"}`;
+ if(!ps.length){$("players").innerHTML='<li class="psub">No players yet. Add everyone in the group.</li>'}
+ else $("players").innerHTML=ps.map((p,i)=>{
+  const key="p:"+p.id,w=winsFor(key,games),lim=limitFor(key,games);
+  return `<li><div class="pmain"><div class="pname">${i===0&&p.n?"👑 ":""}${esc(p.name)}${p.id===me?"<small>YOU</small>":""}</div>
+   <div class="psub">${w?`🏆 ${w} win${w>1?"s":""}`:"No wins yet"}${lim?` · next ≤ ${fmtDur(lim.max)}`:""}</div></div>
+   <div class="pnum">${p.n}<small>beers</small></div>
+   <button class="del" aria-label="Remove ${esc(p.name)}" onclick="removePlayer('${p.id}')">×</button></li>`}).join("");
+ $("teamPick").innerHTML=playersSorted().map(p=>`<label><input type="checkbox" value="${p.id}">${esc(p.name)}</label>`).join("")||'<span class="psub">Add players first.</span>';
+}
+function renderTeams(games){
+ const ts=teamsSorted();
+ $("teamCount").textContent=`${ts.length} team${ts.length===1?"":"s"}`;
+ $("teams").innerHTML=ts.length?ts.map(t=>{
+  const key="t:"+t.id,w=winsFor(key,games),lim=limitFor(key,games);
+  return `<li><div class="pmain"><div class="pname">👥 ${esc(t.name)}</div>
+   <div class="psub">${esc(Object.keys(t.members||{}).map(pname).join(", "))}</div>
+   <div class="psub">${w?`🏆 ${w} win${w>1?"s":""}`:"No wins yet"}${lim?` · next ≤ ${fmtDur(lim.max)}`:""}</div></div>
+   <button class="del" aria-label="Remove ${esc(t.name)}" onclick="removeTeam('${t.id}')">×</button></li>`}).join("")
+  :'<li class="psub">No teams yet.</li>';
+ const gw=winsFor("group",games),gl=limitFor("group",games);
+ $("teams").insertAdjacentHTML("beforeend",`<li><div class="pmain"><div class="pname">🌍 Everyone</div>
+  <div class="psub">${gw?`🏆 ${gw} win${gw>1?"s":""}`:"No wins yet"}${gl?` · next ≤ ${fmtDur(gl.max)}`:""}</div></div></li>`);
+}
+function renderFinished(games){
+ const fin=games.filter(g=>g.status!=="live").slice(0,15);
+ $("finCount").textContent=fin.length?`${fin.length} shown`:"";
+ $("finished").innerHTML=fin.length?fin.map(g=>{
+  const res=g.status==="won"?`🏆 ${g.target}/${g.target} in ${fmtDur(g.finishedAt-g.startedAt)}`:g.status==="lost"?`❌ ${g.done}/${g.target}`:"Cancelled";
+  return `<li><div class="pmain"><div class="pname">${ICON[g.kind]} ${esc(ownerName(g.kind,g.ownerId))}</div>
+   <div class="psub">${g.target} beers · ${fmtDur(g.durationMs)} limit · ${time(g.startedAt)}</div></div>
+   <span class="fres ${g.status}">${res}</span></li>`}).join("")
+  :'<li class="empty" style="display:block">Finished games show up here.</li>';
+}
+function renderLog(beers){
+ $("total").textContent=`${beers.length} ${beers.length===1?"beer":"beers"}`;
+ $("statCount").textContent=beers.length;
+ $("statPhotos").textContent=beers.filter(x=>x.photo).length;
+ if(!beers.length){
+  $("latest").innerHTML='<div class="latestphoto">🍺<br><br>Your first beer will appear here.</div>';
+  $("latestHint").textContent="None yet";
+  $("history").innerHTML='<div class="empty" style="grid-column:1/-1">Your beer history will appear here.<br>Tap <b>ADD BEER</b> to start.</div>';
+  return;
+ }
+ const last=beers.length-1,b=beers[last];
+ $("latestHint").textContent=`Beer #${beers.length} · ${time(b.time)}`;
+ $("latest").innerHTML=`
+  <div class="latestphoto" onclick="photo('${b.id}')">${b.photo?`<img src="${b.photo}" alt="Latest beer">`:"🍺<br><br>Tap to add a photo"}</div>
+  <div class="latestinfo">
+   <div><div class="latesttitle">Beer #${beers.length} · ${esc(pname(b.playerId))}</div>
+    <div class="latestmeta"><button class="timeedit" onclick="editBeer('${b.id}')">${day(b.time)} · ${fullTime(b.time)} ✏️</button></div></div>
+   <button class="photoBtn" onclick="photo('${b.id}')">📷 ${b.photo?"Change":"Add"}</button>
+  </div>`;
+ $("history").innerHTML=beers.map((b,i)=>`<article class="item">
+  <div class="itemphoto" onclick="photo('${b.id}')">${b.photo?`<img src="${b.photo}" alt="Beer ${i+1}" loading="lazy">`:"📷<br>Add photo"}</div>
+  <div class="itembody"><div class="itemtop"><span>Beer #${i+1}</span><button class="del" aria-label="Remove beer ${i+1}" onclick="removeBeer('${b.id}')">×</button></div>
+  <div class="itemwho">${esc(pname(b.playerId))}</div>
+  <div class="itemtime"><button class="timeedit" onclick="editBeer('${b.id}')">${time(b.time)} · ${day(b.time)} ✏️</button></div></div>
+ </article>`).reverse().join("");
+}
+
+/* ---------------- players & teams ---------------- */
+function addPlayer(name){
+ name=(name||"").trim().slice(0,20);if(!name)return null;
+ const dup=list("players").find(p=>p.name.toLowerCase()===name.toLowerCase());
+ if(dup){toast(`${dup.name} is already a player.`);return dup.id}
+ const id=store.add("players",{name,createdAt:now()});
+ toast(`${name} joined 🍻`);return id;
+}
+function addPlayerFromInput(){
+ const id=addPlayer($("newPlayer").value);
+ if(id){$("newPlayer").value="";if(!me)pickMe(id)}
+}
+function pickMe(v){
+ if(v==="__new"){const id=addPlayer(prompt("Your name?"));v=id||me}
+ me=v||"";
+ me?localStorage.setItem("rounds:me:"+ROOM,me):localStorage.removeItem("rounds:me:"+ROOM);
+ renderAll();
+}
+function removePlayer(id){
+ if(confirm(`Remove ${pname(id)}? Their beers stay in the log but show as Unassigned.`)){
+  if(id===me)pickMe("");store.remove("players",id);
+ }
+}
+function createTeam(){
+ const name=$("teamName").value.trim().slice(0,24);
+ const picked=[...document.querySelectorAll("#teamPick input:checked")].map(i=>i.value);
+ if(!name){toast("Give the team a name.");return}
+ if(picked.length<2){toast("Pick at least 2 players for a team.");return}
+ if(list("teams").some(t=>t.name.toLowerCase()===name.toLowerCase())){toast("There's already a team with that name.");return}
+ const members={};picked.forEach(p=>members[p]=true);
+ store.add("teams",{name,members,createdAt:now()});
+ $("teamName").value="";$("teamForm").open=false;toast(`👥 ${name} is in`);
+}
+function removeTeam(id){
+ if(confirm(`Remove team ${data.teams[id]?.name}?`))store.remove("teams",id);
+}
+
+/* ---------------- games ---------------- */
+function startGame(){
+ const games=allGames(),owner=currentOwner();
+ if(!owner){toast(kind==="team"?"Create a team first.":"Add a player first.");return}
+ const target=parseInt($("goalBeers").value,10),ms=formMs();
+ if(!(target>0)){toast("Set a goal of at least 1 beer.");return}
+ if(ms<FLOOR){toast(`The time limit has to be at least ${fmtDur(FLOOR)}.`);return}
+ const key=keyFor(kind,owner);
+ if(games.some(g=>ownerKey(g)===key&&g.status==="live")){toast("That one already has a game running.");return}
+ const lim=limitFor(key,games);
+ if(lim&&ms>lim.max){toast(`After that last win, the limit has to be ${fmtDur(lim.max)} or less.`);return}
+ const t=now(),g={kind,ownerId:owner,target,durationMs:ms,startedAt:t,endsAt:t+ms,cancelled:false};
+ if(kind==="solo")g.members={[owner]:true};
+ if(kind==="team")g.members={...(data.teams[owner].members||{})};
+ store.add("games",g);
+ toast(`${ICON[kind]} ${ownerName(kind,owner)}: ${target} in ${fmtDur(ms)}. Go!`);
+}
+function cancelGame(id){
+ const g=data.games[id];
+ if(g&&confirm(`Cancel ${ownerName(g.kind,g.ownerId)}'s game? It won't count as a win or a loss.`))store.update("games",id,{cancelled:true});
+}
+
+/* ---------------- beers ---------------- */
 function compress(file,max=720,q=.62){
  return new Promise((res,rej)=>{
   const url=URL.createObjectURL(file),img=new Image();
   img.onload=()=>{const k=Math.min(1,max/Math.max(img.width,img.height)),c=document.createElement("canvas");
    c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);
    c.getContext("2d").drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(url);res(c.toDataURL("image/jpeg",q))};
-  img.onerror=()=>{URL.revokeObjectURL(url);rej()};
-  img.src=url;
+  img.onerror=()=>{URL.revokeObjectURL(url);rej()};img.src=url;
  });
 }
-
-/* ---------- actions ---------- */
 function addBeer(){
- pending=store.add({time:now()});
+ if(!me||!data.players[me]){toast("Pick who's drinking first (top of the page).");$("meSelect").focus();return}
+ pending=store.add("beers",{time:now(),playerId:me});
  $("photoInput").value="";$("photoInput").click();
 }
-function photo(id){
- pending=id;$("photoInput").value="";$("photoInput").click();
-}
+function photo(id){pending=id;$("photoInput").value="";$("photoInput").click()}
 $("photoInput").addEventListener("change",async e=>{
- const f=e.target.files[0]; if(!f||!pending)return;
+ const f=e.target.files[0];if(!f||!pending)return;
  const id=pending;pending=null;
- try{store.update(id,{photo:await compress(f)})}
- catch(err){alert("That photo couldn't be read. Try a JPG or PNG.")}
+ try{store.update("beers",id,{photo:await compress(f)})}catch(err){toast("That photo couldn't be read. Try a JPG or PNG.")}
 });
 function removeBeer(id){
- const i=beers.findIndex(b=>b.id===id);
- if(i>-1&&confirm("Remove Beer #"+(i+1)+"?"))store.remove(id);
+ const i=beersSorted().findIndex(b=>b.id===id);
+ if(i>-1&&confirm("Remove Beer #"+(i+1)+"?"))store.remove("beers",id);
 }
-let editingId=null;
 function toLocalInput(ts){const d=new Date(ts);d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,16)}
-function editTime(id){
- const i=beers.findIndex(b=>b.id===id); if(i<0)return;
+function editBeer(id){
+ const bs=beersSorted(),i=bs.findIndex(b=>b.id===id);if(i<0)return;
  editingId=id;
- $("timeTitle").textContent="Edit time for Beer #"+(i+1);
- $("timeInput").value=toLocalInput(beers[i].time);
- $("timeInput").max=toLocalInput(now());
- $("timeDlg").showModal();
+ $("editTitle").textContent=`Edit Beer #${i+1}`;
+ $("editWho").innerHTML='<option value="">Unassigned</option>'+playersSorted().map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join("");
+ $("editWho").value=data.players[bs[i].playerId]?bs[i].playerId:"";
+ $("editTime").value=toLocalInput(bs[i].time);
+ $("editTime").max=toLocalInput(now());
+ $("editDlg").showModal();
 }
-function saveTime(){
- const v=$("timeInput").value; if(!v||!editingId)return;
+function saveEdit(){
+ const v=$("editTime").value;if(!v||!editingId)return;
  const ts=new Date(v).getTime();
- if(isNaN(ts)){alert("That time doesn't look right.");return}
- if(ts>now()+60000){alert("That time is in the future.");return}
- store.update(editingId,{time:ts});
- editingId=null;$("timeDlg").close();
+ if(isNaN(ts)){toast("That time doesn't look right.");return}
+ if(ts>now()+60000){toast("That time is in the future.");return}
+ store.update("beers",editingId,{time:ts,playerId:$("editWho").value||null});
+ editingId=null;$("editDlg").close();
 }
-function resetAll(){
- if(beers.length&&confirm("Reset tonight's entire beer log for everyone?"))store.clear();
-}
-
-/* ---------- render (unchanged look) ---------- */
-function render(){
- $("count").textContent=beers.length;
- $("total").textContent=`${beers.length} ${beers.length===1?"beer":"beers"}`;
- $("statCount").textContent=beers.length;
- $("statPhotos").textContent=beers.filter(x=>x.photo).length;
- $("session").textContent=beers.length?"In progress":"Ready";
- renderGoal();
- if(!beers.length){
-   $("latest").innerHTML='<div class="latestphoto">🍺<br><br>Your first beer will appear here.</div>';
-   $("latestHint").textContent="None yet";
-   $("history").innerHTML='<div class="empty" style="grid-column:1/-1">Your beer history will appear here.<br>Tap <b>ADD BEER</b> to start.</div>';
-   $("statSpan").textContent="—";return;
+function resetNight(){
+ if(confirm("Start a fresh night? This clears every beer and game for everyone. Players and teams stay.")){
+  store.clear("beers");store.clear("games");lastStatus={};
  }
- const last=beers.length-1,b=beers[last];
- $("latestHint").textContent=`Beer #${beers.length} · ${time(b.time)}`;
- $("latest").innerHTML=`
-   <div class="latestphoto" onclick="photo('${b.id}')">
-     ${b.photo?`<img src="${b.photo}" alt="Latest beer">`:`🍺<br><br>Tap to add a photo`}
-   </div>
-   <div class="latestinfo">
-     <div><div class="latesttitle">Beer #${beers.length}</div><div class="latestmeta"><button class="timeedit" onclick="editTime('${b.id}')">${day(b.time)} · ${fullTime(b.time)} ✏️</button></div></div>
-     <button class="photoBtn" onclick="photo('${b.id}')">📷 ${b.photo?"Change":"Add"} Photo</button>
-   </div>`;
- $("history").innerHTML=beers.map((b,i)=>`<article class="item">
-     <div class="itemphoto" onclick="photo('${b.id}')">${b.photo?`<img src="${b.photo}" alt="Beer ${i+1}" loading="lazy">`:`📷<br>Add photo`}</div>
-     <div class="itembody"><div class="itemtop"><span>Beer #${i+1}</span><button class="del" onclick="removeBeer('${b.id}')">×</button></div>
-     <div class="itemtime"><button class="timeedit" onclick="editTime('${b.id}')">${time(b.time)} · ${day(b.time)} ✏️</button></div></div>
-   </article>`).reverse().join("");
- const span=Math.round((beers[last].time-beers[0].time)/60000);
- $("statSpan").textContent=beers.length>1?(span<60?span+"m":Math.floor(span/60)+"h "+(span%60)+"m"):"—";
 }
+$("editDlg").addEventListener("click",e=>{if(e.target===$("editDlg"))$("editDlg").close()});
 boot();
 </script>
 </body>
