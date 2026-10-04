@@ -134,6 +134,65 @@ dialog.timedlg::backdrop{background:#000a}
 .timedlg .cancel{background:#3a2919;color:#ffe8b6}
 .timedlg .save{background:var(--gold);color:#201307}
 
+/* ===== tabs ===== */
+.app{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:10;display:flex;justify-content:center;gap:6px;
+ padding:8px 12px calc(8px + env(safe-area-inset-bottom,0px));background:#120d08f2;border-top:1px solid var(--line);backdrop-filter:blur(8px)}
+.tabbar button{flex:1;max-width:220px;background:transparent;color:var(--muted);padding:8px 6px;border-radius:12px;font-size:12px;line-height:1.2}
+.tabbar button .ti{display:block;font-size:22px}
+.tabbar button[aria-selected="true"]{color:var(--gold);background:#2b1e12}
+
+/* ===== What's On Tap ===== */
+.taptitle{font-size:28px;font-weight:850;margin:4px 3px 2px}
+.tapsub{color:var(--muted);font-size:13px;margin:0 3px 14px}
+.pourimg{height:230px;border-radius:18px;background:linear-gradient(135deg,#4a3521,#1d1610);display:flex;align-items:center;justify-content:center;font-size:72px;overflow:hidden;position:relative;cursor:pointer}
+.pourimg img{width:100%;height:100%;object-fit:cover}
+.pcount{position:absolute;right:10px;bottom:10px;background:#000a;color:var(--cream);font-size:12px;font-weight:800;padding:4px 9px;border-radius:999px}
+.plabel{font-size:11px;text-transform:uppercase;letter-spacing:1.3px;color:var(--gold);font-weight:800;margin-top:14px}
+.pdrink{font-size:24px;font-weight:850;margin-top:3px;overflow-wrap:anywhere}
+.pills{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0 0}
+.pill{background:#2b1e12;border:1px solid var(--line);border-radius:999px;padding:6px 10px;font-size:12px;color:#ecdcc4}
+.pill.live{border-color:var(--gold);color:var(--gold2)}
+.pquote{font-size:14px;color:#ecdcc4;margin:10px 0 0;font-style:italic;overflow-wrap:anywhere}
+.endsess{background:transparent;color:var(--gold);font-size:13px;padding:8px 0 0;text-decoration:underline;text-underline-offset:3px}
+.board{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.board .stat{text-align:left;padding:13px}
+.board .stat b{font-size:20px;overflow-wrap:anywhere}
+.board .stat span{display:block;margin-top:3px}
+.feed{display:grid;gap:10px}
+.pcard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px;display:flex;gap:12px}
+.pthumb{width:62px;height:62px;border-radius:14px;background:#302014;display:flex;align-items:center;justify-content:center;font-size:28px;flex:none;overflow:hidden;cursor:pointer;padding:0}
+.pthumb img{width:100%;height:100%;object-fit:cover}
+.pbody{flex:1;min-width:0}
+.ptop{display:flex;justify-content:space-between;gap:8px;align-items:start}
+.pwho{font-size:13px;font-weight:800;color:var(--gold)}
+.pname{font-size:16px;font-weight:800;margin-top:2px;overflow-wrap:anywhere}
+.psmall{font-size:12px;color:var(--muted);margin-top:3px}
+.reacts{display:flex;gap:6px;margin-top:9px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.reacts::-webkit-scrollbar{display:none}
+.react{flex:none;white-space:nowrap;background:#2b1e12;border:1px solid var(--line);border-radius:999px;padding:5px 9px;font-size:12px;font-weight:700;color:#ecdcc4}
+.react.mine{background:var(--gold);border-color:var(--gold);color:#201307}
+.react b{margin-left:3px}
+.crew{display:flex;gap:12px;align-items:center}
+.crew .pthumb{cursor:default;font-size:22px;letter-spacing:-8px;padding-right:8px}
+
+/* check-in sheet */
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chips button{background:transparent;border:1px solid var(--line);border-radius:999px;padding:8px 12px;font-size:13px;font-weight:700;color:var(--cream)}
+.chips button[aria-pressed="true"]{background:var(--gold);color:#201307;border-color:var(--gold)}
+.lbl{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin:14px 0 6px}
+.photos{display:flex;gap:8px;flex-wrap:wrap}
+.photos .ph{width:72px;height:72px;border-radius:12px;overflow:hidden;position:relative;background:#1b120b}
+.photos .ph img{width:100%;height:100%;object-fit:cover}
+.photos .ph button{position:absolute;top:3px;right:3px;width:22px;height:22px;border-radius:50%;padding:0;background:#000b;color:#fff;font-size:13px;line-height:22px}
+.photos .addph{width:72px;height:72px;border-radius:12px;border:1px dashed var(--line);background:transparent;color:var(--muted);font-size:12px;padding:4px}
+.toggle{display:flex;align-items:center;gap:10px;margin-top:14px;font-weight:700;cursor:pointer}
+.toggle input{width:20px;height:20px;accent-color:var(--gold)}
+dialog.wide{width:min(480px,94vw)}
+dialog.lightbox{border:0;background:transparent;padding:0;max-width:94vw;max-height:92vh;overflow:auto}
+dialog.lightbox::backdrop{background:#000d}
+dialog.lightbox img{display:block;max-width:94vw;max-height:80vh;border-radius:12px;margin:0 auto 10px}
+dialog.lightbox p{color:var(--cream);text-align:center;margin:0 0 6px}
+
 .toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top,0px));transform:translate(-50%,-160%);z-index:20;background:var(--cream);color:#201307;font-weight:800;padding:10px 18px;border-radius:999px;box-shadow:0 8px 24px #000a;transition:transform .35s;max-width:92vw;text-align:center;font-size:14px}
 .toast.show{transform:translate(-50%,0)}
 @media(max-width:390px){.count{font-size:78px}.latestphoto{height:210px}.itemphoto{height:120px}.gtimer{font-size:24px}}
@@ -152,6 +211,7 @@ dialog.timedlg::backdrop{background:#000a}
   <select id="meSelect" onchange="pickMe(this.value)"></select>
 </div>
 
+<div id="tabRounds">
 <section class="hero">
   <div class="topline"><span>Tonight's Count</span><span id="session">Ready</span></div>
   <div class="countrow"><div class="mug">🍺</div><div class="count" id="count">0</div></div>
@@ -233,6 +293,29 @@ dialog.timedlg::backdrop{background:#000a}
   <div class="stat"><b id="statWins">0</b><span>Games Won</span></div>
   <div class="stat"><b id="statPhotos">0</b><span>Photos</span></div>
 </div>
+</div>
+
+<div id="tabTap" hidden>
+  <div class="taptitle">What's On Tap</div>
+  <p class="tapsub">Show the group what you're pouring tonight.</p>
+
+  <section class="hero" id="myPour"></section>
+
+  <section class="block">
+    <div class="sectionhead"><h2>🔥 Tonight in the Group</h2><span id="tapSince"></span></div>
+    <div class="board" id="tapBoard"></div>
+  </section>
+
+  <section class="block" id="crewSec">
+    <div class="sectionhead"><h2>👥 Drinking Together</h2></div>
+    <div class="feed" id="crews"></div>
+  </section>
+
+  <section class="block">
+    <div class="sectionhead"><h2>🍻 The Pour Feed</h2><span>Tonight</span></div>
+    <div class="feed" id="pourFeed"></div>
+  </section>
+</div>
 <div class="foot" id="foot">Connecting…</div>
 </div>
 
@@ -283,6 +366,39 @@ dialog.timedlg::backdrop{background:#000a}
   </div>
 </dialog>
 
+<nav class="tabbar" role="tablist" aria-label="Sections">
+  <button role="tab" id="tabBtnRounds" aria-selected="true" onclick="showTab('rounds')"><span class="ti">🎮</span>Rounds</button>
+  <button role="tab" id="tabBtnTap" aria-selected="false" onclick="showTab('tap')"><span class="ti">🍺</span>On Tap</button>
+</nav>
+
+<dialog class="timedlg wide" id="pourDlg">
+  <h3>Check in your pour</h3>
+  <span class="lbl">Photos <em style="text-transform:none;letter-spacing:0">(up to 3, optional)</em></span>
+  <div class="photos" id="pourPhotos"></div>
+  <label class="fld"><span>What are you drinking?</span>
+    <input class="txt" id="pourDrink" maxlength="40" list="drinkList" placeholder="e.g. Modelo, Jameson, Old Fashioned" autocomplete="off"></label>
+  <datalist id="drinkList"></datalist>
+  <div class="chips" id="pourCats" style="margin-top:8px"></div>
+  <span class="lbl">Vibe</span>
+  <div class="chips" id="pourVibes"></div>
+  <input class="txt" id="pourVibeCustom" maxlength="24" placeholder="Your vibe" style="margin-top:8px" hidden>
+  <span class="lbl">Where <em style="text-transform:none;letter-spacing:0">(optional)</em></span>
+  <div class="chips" id="pourWhere"></div>
+  <input class="txt" id="pourWhereCustom" maxlength="30" placeholder="Where are you?" style="margin-top:8px" hidden>
+  <label class="fld"><span>Note <em style="text-transform:none;letter-spacing:0">(optional)</em></span>
+    <input class="txt" id="pourNote" maxlength="80" placeholder="Much needed after today."></label>
+  <span class="lbl" id="tagLbl">With <em style="text-transform:none;letter-spacing:0">(optional)</em></span>
+  <div class="chips" id="pourTags"></div>
+  <label class="toggle"><input type="checkbox" id="pourLive"> 🍻 Still pouring (start a session timer)</label>
+  <div class="row">
+    <button class="cancel" onclick="$('pourDlg').close()">Cancel</button>
+    <button class="save" id="pourSave" onclick="savePour()">Check in</button>
+  </div>
+</dialog>
+
+<dialog class="lightbox" id="lightbox"><div id="lightBody"></div></dialog>
+<input id="pourPhotoInput" class="hide" type="file" accept="image/*" multiple>
+
 <input id="photoInput" class="hide" type="file" accept="image/*" capture="environment">
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
@@ -297,7 +413,7 @@ const FIREBASE_CONFIG = window.FIREBASE_CONFIG || null;
 
 const ROOM=((new URLSearchParams(location.search).get("room")||"the-lounge").toLowerCase().replace(/[^a-z0-9_-]/g,""))||"the-lounge";
 const ROOT="beer-counter/"+ROOM;
-const COLS=["players","teams","games","beers"];
+const COLS=["players","teams","games","beers","pours"];
 const STEP=30*60000;      // each win cuts the next time limit by 30 min
 const FLOOR=15*60000;     // shortest time limit allowed
 const ICON={solo:"👤",team:"👥",group:"🌍"};
@@ -309,7 +425,7 @@ const STATUS={
  cancelled:{e:"🚫",label:"Cancelled"}
 };
 
-let data={players:{},teams:{},games:{},beers:{}};
+let data={players:{},teams:{},games:{},beers:{},pours:{}};
 let db=null, offset=0, booted=false, kind="solo", pending=null, editingId=null;
 let me=localStorage.getItem("rounds:me:"+ROOM)||"";
 let lastStatus={}, lastSig="";
@@ -348,6 +464,13 @@ const store={
  remove(col,id){
   if(db)return db.ref(`${ROOT}/${col}/${id}`).remove().catch(fail);
   delete data[col][id];localSave();renderAll();
+ },
+ setPath(path,val){
+  if(db)return db.ref(`${ROOT}/${path}`).set(val).catch(fail);
+  const parts=path.split("/");let o=data;
+  for(let i=0;i<parts.length-1;i++)o=o[parts[i]]=o[parts[i]]||{};
+  if(val===null)delete o[parts[parts.length-1]];else o[parts[parts.length-1]]=val;
+  localSave();renderAll();
  },
  clear(col){
   if(db)return db.ref(`${ROOT}/${col}`).remove().catch(fail);
@@ -416,6 +539,7 @@ function renderAll(){
  lastSig=games.map(g=>g.id+g.status).join("|");
  renderMe();renderHero(beers,games);renderLive(games);renderForm(games);
  renderPlayers(beers,games);renderTeams(games);renderFinished(games);renderLog(beers);
+ renderTap();
  $("statWins").textContent=games.filter(g=>g.status==="won").length;
 }
 function statusToasts(games){
@@ -430,6 +554,7 @@ function tick(){
  if(!booted)return;
  const games=allGames();
  if(games.map(g=>g.id+g.status).join("|")!==lastSig){renderAll();return}
+ document.querySelectorAll("[data-since]").forEach(el=>{el.textContent=fmtDur(Math.max(60000,now()-Number(el.dataset.since)))});
  document.querySelectorAll("[data-timer]").forEach(el=>{
   const g=data.games[el.dataset.timer];if(g)el.textContent=fmtClock(Math.max(0,g.endsAt-now()));
  });
@@ -729,7 +854,178 @@ function resetNight(){
   store.clear("beers");store.clear("games");lastStatus={};
  }
 }
-["editDlg","pastDlg","endDlg"].forEach(id=>$(id).addEventListener("click",e=>{if(e.target===$(id))$(id).close()}));
+
+/* ================= WHAT'S ON TAP ================= */
+// Quick-pick lists (edit freely; old pours keep their own snapshot)
+const CATS=[["beer","🍺","Beer"],["whiskey","🥃","Whiskey"],["cocktail","🍸","Cocktail"],["wine","🍷","Wine"],["other","🥤","Other"]];
+const VIBES=[["chill","😌","Just Chilling"],["longday","😮‍💨","Long Day"],["turnup","🔥","Turn Up"],["celebrate","🎉","Celebrating"],["game","🏈","Watching the Game"],["movie","🎬","Movie Night"],["music","🎵","Music"],["date","💘","Date Night"],["party","🪩","Party"],["custom","✨","Custom"]];
+const WHERE=[["home","🏠","Home"],["bar","🍻","Bar"],["restaurant","🍽️","Restaurant"],["gamenight","🎮","Game Night"],["other","📍","Other"]];
+const REACTIONS=[["cheers","🍻","Cheers"],["fire","🔥","Good one"],["eyes","👀","What is it?"],["respect","🥃","Respect"],["withyou","🤝","I'm with you"]];
+// Same-drink matching: aliases + filler words that don't change the drink
+const DRINK_ALIASES={"modelo especial":"modelo","corona extra":"corona","bud":"budweiser","jack":"jack daniels","jack daniel":"jack daniels","jd":"jack daniels","jameson irish whiskey":"jameson","guinness draught":"guinness","hennessy vs":"hennessy","henny":"hennessy"};
+const FILLER=/\b(beer|lager|especial|extra|draught|draft|can|bottle|the|a)\b/g;
+function drinkKey(name){
+ const n=String(name||"").toLowerCase().replace(/[’'`.]/g,"").replace(/[^a-z0-9 ]+/g," ").replace(/\s+/g," ").trim();
+ if(DRINK_ALIASES[n])return DRINK_ALIASES[n];
+ const k=n.replace(FILLER," ").replace(/\s+/g," ").trim()||n;
+ return DRINK_ALIASES[k]||k;
+}
+const catEmoji=c=>(CATS.find(x=>x[0]===c)||CATS[4])[1];
+function nightStart(){const d=new Date(now()),s=new Date(d);s.setHours(5,0,0,0);if(d<s)s.setDate(s.getDate()-1);return s.getTime()}
+const poursTonight=()=>list("pours").filter(p=>p.createdAt>=nightStart()).sort((a,b)=>b.createdAt-a.createdAt);
+const isLive=p=>p.isStillPouring&&!p.sessionEndedAt&&p.createdAt>=nightStart();
+
+let tab=(location.hash==="#tap"||localStorage.getItem("rounds:tab")==="tap")?"tap":"rounds";
+function showTab(t){
+ tab=t;localStorage.setItem("rounds:tab",t);
+ $("tabRounds").hidden=t!=="rounds";$("tabTap").hidden=t!=="tap";
+ $("tabBtnRounds").setAttribute("aria-selected",t==="rounds");$("tabBtnTap").setAttribute("aria-selected",t==="tap");
+ // Keep #tap in the address bar on the real site; sandboxed previews block this, so ignore failures
+ try{history.replaceState(null,"",t==="tap"?"#tap":location.pathname+location.search)}catch(e){}
+ scrollTo(0,0);
+}
+
+function pourPills(p){
+ const out=[];
+ if(p.vibeLabel)out.push(`<span class="pill">${p.vibeEmoji||""} ${esc(p.vibeLabel)}</span>`);
+ if(p.whereLabel)out.push(`<span class="pill">${p.whereEmoji||"📍"} ${esc(p.whereLabel)}</span>`);
+ if(isLive(p))out.push(`<span class="pill live">🍻 Still Pouring · <span data-since="${p.sessionStartedAt}">${fmtDur(Math.max(60000,now()-p.sessionStartedAt))}</span></span>`);
+ else if(p.sessionStartedAt&&p.sessionEndedAt)out.push(`<span class="pill">⏱ Poured for ${fmtDur(Math.max(60000,p.sessionEndedAt-p.sessionStartedAt))}</span>`);
+ return out.join("");
+}
+function renderTap(){
+ const pours=poursTonight();
+ // My Pour
+ const mine=pours.find(p=>p.playerId===me);
+ if(mine){
+  const ph=mine.photos||[];
+  $("myPour").innerHTML=`
+   <div class="pourimg" onclick="openPhotos('${mine.id}')">${ph.length?`<img src="${ph[0]}" alt="${esc(mine.drink)}">${ph.length>1?`<span class="pcount">1/${ph.length}</span>`:""}`:catEmoji(mine.category)}</div>
+   <div class="plabel">My Pour · ${time(mine.createdAt)}</div>
+   <div class="pdrink">${esc(mine.drink)}</div>
+   <div class="pills">${pourPills(mine)}</div>
+   ${mine.note?`<div class="pquote">“${esc(mine.note)}”</div>`:""}
+   ${isLive(mine)?`<button class="endsess" onclick="endSession('${mine.id}')">End my session</button>`:""}
+   <div class="buttons"><button class="add" onclick="openPour()">＋ CHECK IN YOUR POUR</button></div>`;
+ }else{
+  $("myPour").innerHTML=`
+   <div class="pourimg" style="cursor:default">🍺</div>
+   <div class="plabel">My Pour</div>
+   <div class="pdrink" style="font-size:18px;color:var(--muted)">${me?"You haven't checked in tonight.":"Pick your name at the top, then check in."}</div>
+   <div class="buttons"><button class="add" onclick="openPour()">＋ CHECK IN YOUR POUR</button></div>`;
+ }
+ // Crews (same normalized drink, 2+ different people)
+ const crewMap=new Map();
+ pours.forEach(p=>{const k=p.drinkKey||drinkKey(p.drink);if(!crewMap.has(k))crewMap.set(k,{names:{},people:new Set(),cat:p.category});
+  const c=crewMap.get(k);c.people.add(p.playerId);c.names[p.drink]=(c.names[p.drink]||0)+1});
+ const crewName=c=>Object.entries(c.names).sort((a,b)=>b[1]-a[1]||a[0].length-b[0].length)[0][0];
+ const crews=[...crewMap.values()].filter(c=>c.people.size>1).sort((a,b)=>b.people.size-a.people.size);
+ // Tonight board (social stats only, no drink counts)
+ const people=new Set(pours.map(p=>p.playerId)).size;
+ const top=[...crewMap.values()].sort((a,b)=>b.people.size-a.people.size)[0];
+ const vibeCount={};pours.forEach(p=>{if(p.vibeLabel){const k=(p.vibeEmoji||"")+" "+p.vibeLabel;vibeCount[k]=(vibeCount[k]||0)+1}});
+ const topVibe=Object.entries(vibeCount).sort((a,b)=>b[1]-a[1])[0];
+ const live=pours.filter(isLive);
+ const liveP=new Set(live.map(p=>p.playerId)).size;
+ $("tapSince").textContent=pours.length?`since ${time(nightStart())}`:"";
+ $("tapBoard").innerHTML=`
+  <div class="stat"><b>${people}</b><span>People checked in</span></div>
+  <div class="stat"><b>${crewMap.size}</b><span>Different drinks</span></div>
+  <div class="stat"><b>${top?catEmoji(top.cat)+" "+esc(crewName(top)):"—"}</b><span>Most popular${top&&top.people.size>1?` · ${top.people.size} people`:""}</span></div>
+  <div class="stat"><b>${topVibe?esc(topVibe[0]):"—"}</b><span>Tonight's vibe${liveP?` · ${liveP} still pouring`:""}</span></div>`;
+ $("crewSec").hidden=!crews.length;
+ $("crews").innerHTML=crews.map(c=>`<div class="pcard crew"><div class="pthumb">${catEmoji(c.cat)}${catEmoji(c.cat)}</div>
+  <div class="pbody"><div class="pname">The ${esc(crewName(c))} Crew</div>
+  <div class="psmall" style="color:var(--cream)">${c.people.size} people are drinking ${esc(crewName(c))} tonight.</div>
+  <div class="psmall">${esc([...c.people].map(pname).join(" · "))}</div></div></div>`).join("");
+ // Feed
+ $("pourFeed").innerHTML=pours.length?pours.map(p=>{
+  const ph=p.photos||[],tagged=Object.keys(p.tagged||{}).map(pname);
+  const reacts=REACTIONS.map(([k,e,l])=>{const who=Object.keys(p.reactions?.[k]||{});const mineR=who.includes(me);
+   return `<button class="react${mineR?" mine":""}" title="${esc(who.map(pname).join(", "))}" onclick="toggleReact('${p.id}','${k}')">${e} ${l}${who.length?`<b>${who.length}</b>`:""}</button>`}).join("");
+  return `<article class="pcard">
+   <button class="pthumb" onclick="openPhotos('${p.id}')" aria-label="View pour">${ph.length?`<img src="${ph[0]}" alt="" loading="lazy">`:catEmoji(p.category)}</button>
+   <div class="pbody">
+    <div class="ptop"><span class="pwho">${esc(pname(p.playerId))}${tagged.length?` <span style="color:var(--muted);font-weight:600">with ${esc(tagged.join(", "))}</span>`:""}</span>
+     ${p.playerId===me?`<button class="del" aria-label="Delete pour" onclick="deletePour('${p.id}')">×</button>`:""}</div>
+    <div class="pname">${catEmoji(p.category)} ${esc(p.drink)}</div>
+    <div class="psmall">${[p.vibeLabel?`${p.vibeEmoji||""} ${esc(p.vibeLabel)}`:"",p.whereLabel?esc(p.whereLabel):"",time(p.createdAt)].filter(Boolean).join(" · ")}</div>
+    ${isLive(p)?`<div class="pills"><span class="pill live">🍻 Still Pouring · <span data-since="${p.sessionStartedAt}">${fmtDur(Math.max(60000,now()-p.sessionStartedAt))}</span></span></div>`:""}
+    ${p.note?`<div class="pquote" style="font-size:13px">“${esc(p.note)}”</div>`:""}
+    <div class="reacts">${reacts}</div>
+   </div></article>`}).join("")
+  :'<div class="empty">No pours yet tonight. Be the first to check in.</div>';
+ // drink suggestions from everything poured before
+ $("drinkList").innerHTML=[...new Set(list("pours").map(p=>p.drink))].sort().map(d=>`<option value="${esc(d)}">`).join("");
+}
+
+/* --- check-in sheet --- */
+let pourPhotos=[],pCat="beer",pVibe="chill",pWhere="",pTags=new Set();
+function chipRow(el,items,selected,onpick,multi){
+ $(el).innerHTML=items.map(([k,e,l])=>`<button type="button" data-k="${k}" aria-pressed="${multi?selected.has(k):selected===k}">${e?e+" ":""}${esc(l)}</button>`).join("");
+ $(el).onclick=ev=>{const b=ev.target.closest("[data-k]");if(b)onpick(b.dataset.k)};
+}
+function drawPourForm(){
+ chipRow("pourCats",CATS,pCat,k=>{pCat=k;drawPourForm()});
+ chipRow("pourVibes",VIBES,pVibe,k=>{pVibe=k;drawPourForm()});
+ chipRow("pourWhere",WHERE,pWhere,k=>{pWhere=pWhere===k?"":k;drawPourForm()});
+ $("pourVibeCustom").hidden=pVibe!=="custom";
+ $("pourWhereCustom").hidden=pWhere!=="other";
+ const others=playersSorted().filter(p=>p.id!==me).map(p=>[p.id,"",p.name]);
+ $("tagLbl").hidden=!others.length;
+ chipRow("pourTags",others,pTags,k=>{pTags.has(k)?pTags.delete(k):pTags.add(k);drawPourForm()},true);
+ $("pourPhotos").innerHTML=pourPhotos.map((src,i)=>`<div class="ph"><img src="${src}" alt=""><button type="button" aria-label="Remove photo" onclick="pourPhotos.splice(${i},1);drawPourForm()">×</button></div>`).join("")+
+  (pourPhotos.length<3?`<button type="button" class="addph" onclick="$('pourPhotoInput').click()">📷<br>Add photo</button>`:"");
+}
+function openPour(){
+ if(!me||!data.players[me]){toast("Pick who you are first (top of the page).");$("meSelect").focus();return}
+ const last=list("pours").filter(p=>p.playerId===me).sort((a,b)=>b.createdAt-a.createdAt)[0];
+ pourPhotos=[];pTags=new Set();pWhere=last?.whereKey||"";pVibe=last?.vibeKey||"chill";pCat=last?.category||"beer";
+ $("pourDrink").value=last?.drink||"";$("pourNote").value="";
+ $("pourVibeCustom").value=last?.vibeKey==="custom"?last.vibeLabel:"";
+ $("pourWhereCustom").value=last?.whereKey==="other"?last.whereLabel:"";
+ $("pourLive").checked=false;
+ drawPourForm();$("pourDlg").showModal();
+}
+$("pourPhotoInput").addEventListener("change",async e=>{
+ const files=[...e.target.files].slice(0,3-pourPhotos.length);e.target.value="";
+ for(const f of files){try{pourPhotos.push(await compress(f))}catch(err){toast("One photo couldn't be read.")}}
+ drawPourForm();
+});
+function savePour(){
+ const drink=$("pourDrink").value.trim().slice(0,40);
+ if(!drink){toast("What are you drinking?");$("pourDrink").focus();return}
+ const v=VIBES.find(x=>x[0]===pVibe),w=WHERE.find(x=>x[0]===pWhere);
+ const t=now();
+ const p={playerId:me,drink,drinkKey:drinkKey(drink),category:pCat,createdAt:t,vibeKey:pVibe,vibeEmoji:v[1],
+  vibeLabel:pVibe==="custom"?($("pourVibeCustom").value.trim().slice(0,24)||"Custom"):v[2],isStillPouring:false};
+ if(w){p.whereKey=pWhere;p.whereEmoji=w[1];p.whereLabel=pWhere==="other"?($("pourWhereCustom").value.trim().slice(0,30)||"Other"):w[2]}
+ const note=$("pourNote").value.trim().slice(0,80);if(note)p.note=note;
+ if(pourPhotos.length)p.photos=pourPhotos.slice(0,3);
+ if(pTags.size){p.tagged={};pTags.forEach(id=>p.tagged[id]=true)}
+ if($("pourLive").checked){
+  p.isStillPouring=true;p.sessionStartedAt=t;
+  // one live session per person: close the previous one
+  list("pours").filter(x=>x.playerId===me&&isLive(x)).forEach(x=>store.update("pours",x.id,{isStillPouring:false,sessionEndedAt:t}));
+ }
+ store.add("pours",p);
+ $("pourDlg").close();toast(`${catEmoji(pCat)} ${drink} is on tap`);
+}
+function endSession(id){store.update("pours",id,{isStillPouring:false,sessionEndedAt:now()});toast("Session ended 🍻")}
+function deletePour(id){if(confirm("Delete this pour?"))store.remove("pours",id)}
+function toggleReact(id,k){
+ if(!me||!data.players[me]){toast("Pick who you are first (top of the page).");return}
+ const has=!!data.pours[id]?.reactions?.[k]?.[me];
+ store.setPath(`pours/${id}/reactions/${k}/${me}`,has?null:true);
+}
+function openPhotos(id){
+ const p=data.pours[id];if(!p)return;
+ const ph=p.photos||[];if(!ph.length)return;
+ $("lightBody").innerHTML=`<p><b>${esc(pname(p.playerId))}</b> · ${esc(p.drink)} · ${time(p.createdAt)}</p>`+ph.map(src=>`<img src="${src}" alt="${esc(p.drink)}">`).join("");
+ $("lightbox").showModal();
+}
+["editDlg","pastDlg","endDlg","pourDlg","lightbox"].forEach(id=>$(id).addEventListener("click",e=>{if(e.target===$(id))$(id).close()}));
+showTab(tab);
 boot();
 </script>
 </body>
