@@ -92,7 +92,19 @@ details.teamform summary::-webkit-details-marker{display:none}
 .flist{list-style:none;margin:0;padding:0;display:grid;gap:8px}
 .flist li{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 14px}
 .fres{font-weight:850;white-space:nowrap}
-.fres.won{color:var(--green)}.fres.lost{color:var(--red)}.fres.cancelled{color:var(--muted)}
+.fres{text-align:right}
+.fres small{display:block;font-weight:600;font-size:11px;color:var(--muted)}
+.fres.won{color:var(--green)}.fres.lost{color:var(--red)}.fres.tapped{color:#f0a35e}.fres.other{color:var(--gold2)}.fres.cancelled{color:var(--muted)}
+.fnote{font-size:12px;color:var(--cream);margin-top:3px;font-style:italic;overflow-wrap:anywhere}
+.addpast{background:transparent;color:var(--gold);font-size:13px;padding:0}
+.results{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.results label{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:12px;padding:10px;font-weight:800;font-size:14px;cursor:pointer}
+.results input{position:absolute;opacity:0;pointer-events:none}
+.results .em{font-size:22px}
+.results label:has(input:checked){background:var(--gold);color:#201307;border-color:var(--gold)}
+.results label:has(input:focus-visible){outline:2px solid var(--gold2);outline-offset:2px}
+dialog.timedlg{max-height:90vh;overflow:auto}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 
 /* beer log */
 .latestcard{background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden}
@@ -202,7 +214,7 @@ dialog.timedlg::backdrop{background:#000a}
 </section>
 
 <section class="block">
-  <div class="sectionhead"><h2>Finished Games</h2><span id="finCount"></span></div>
+  <div class="sectionhead"><h2>Finished Games</h2><button class="addpast" onclick="openPast()">+ Add past game</button></div>
   <ul class="flist" id="finished"></ul>
 </section>
 
@@ -234,6 +246,43 @@ dialog.timedlg::backdrop{background:#000a}
   </div>
 </dialog>
 
+<dialog class="timedlg" id="pastDlg">
+  <h3>Add a past game</h3>
+  <div class="two">
+    <label class="fld"><span>Type</span>
+      <select id="pastKind" onchange="pastKindChanged()">
+        <option value="solo">👤 Solo</option><option value="team">👥 Team</option><option value="group">🌍 Everyone</option>
+      </select></label>
+    <label class="fld" id="pastOwnerWrap"><span id="pastOwnerLabel">Player</span><select id="pastOwner"></select></label>
+  </div>
+  <div class="two">
+    <label class="fld"><span>Beer goal</span><input class="txt" id="pastTarget" type="number" min="1" max="99" value="5" inputmode="numeric"></label>
+    <label class="fld"><span>Beers drunk</span><input class="txt" id="pastDone" type="number" min="0" max="99" placeholder="optional" inputmode="numeric"></label>
+  </div>
+  <div class="two">
+    <label class="fld"><span>Limit hours</span><input class="txt" id="pastHours" type="number" min="0" max="24" value="2" inputmode="numeric"></label>
+    <label class="fld"><span>Limit minutes</span><input class="txt" id="pastMins" type="number" min="0" max="59" value="0" inputmode="numeric"></label>
+  </div>
+  <label class="fld"><span>Started at</span><input class="txt" type="datetime-local" id="pastStart" step="60"></label>
+  <div class="fld"><span style="display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px">Result</span>
+    <div class="results" id="pastResults"></div></div>
+  <label class="fld"><span>Note <em style="text-transform:none;letter-spacing:0">(optional)</em></span><input class="txt" id="pastNote" maxlength="60" placeholder="What happened?"></label>
+  <div class="row">
+    <button class="cancel" onclick="$('pastDlg').close()">Cancel</button>
+    <button class="save" onclick="savePast()">Add game</button>
+  </div>
+</dialog>
+
+<dialog class="timedlg" id="endDlg">
+  <h3 id="endTitle">End game early</h3>
+  <div class="fld"><div class="results" id="endResults"></div></div>
+  <label class="fld"><span>Note <em style="text-transform:none;letter-spacing:0">(optional)</em></span><input class="txt" id="endNote" maxlength="60" placeholder="What happened?"></label>
+  <div class="row">
+    <button class="cancel" onclick="$('endDlg').close()">Back</button>
+    <button class="save" onclick="saveEnd()">End game</button>
+  </div>
+</dialog>
+
 <input id="photoInput" class="hide" type="file" accept="image/*" capture="environment">
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
@@ -252,6 +301,13 @@ const COLS=["players","teams","games","beers"];
 const STEP=30*60000;      // each win cuts the next time limit by 30 min
 const FLOOR=15*60000;     // shortest time limit allowed
 const ICON={solo:"👤",team:"👥",group:"🌍"};
+const STATUS={
+ won:{e:"🏆",label:"Crushed it"},
+ lost:{e:"💀",label:"Fell short"},
+ tapped:{e:"🥴",label:"Tapped out"},
+ other:{e:"🤷",label:"Other"},
+ cancelled:{e:"🚫",label:"Cancelled"}
+};
 
 let data={players:{},teams:{},games:{},beers:{}};
 let db=null, offset=0, booted=false, kind="solo", pending=null, editingId=null;
@@ -334,10 +390,12 @@ function ownerName(k,owner){return k==="group"?"Everyone":k==="team"?(data.teams
 
 function gameStats(g,beers){
  const mem=g.kind==="group"?null:new Set(Object.keys(g.members||{}));
- const hits=beers.filter(b=>b.time>=g.startedAt&&b.time<=g.endsAt&&(!mem||mem.has(b.playerId)));
- const done=hits.length;
- const status=g.cancelled?"cancelled":done>=g.target?"won":now()>=g.endsAt?"lost":"live";
- return {done,status,finishedAt:status==="won"?hits[g.target-1].time:null};
+ const stop=g.endedAt||g.endsAt;
+ const hits=beers.filter(b=>b.time>=g.startedAt&&b.time<=stop&&(!mem||mem.has(b.playerId)));
+ const done=typeof g.done==="number"?g.done:hits.length;
+ const status=g.cancelled?"cancelled":g.result?g.result:hits.length>=g.target?"won":now()>=g.endsAt?"lost":"live";
+ const finishedAt=g.result?(g.finishedAt||null):status==="won"?hits[g.target-1].time:null;
+ return {done,status,finishedAt};
 }
 function allGames(){
  const bs=beersSorted();
@@ -403,7 +461,7 @@ function renderLive(games){
    <div class="goalprog"><span>${g.target-g.done} to go</span><span><b>${g.done}</b> / ${g.target}</span></div>
    <div class="bar"><span style="width:${Math.min(100,g.done/g.target*100)}%"></span></div>
    <div class="gfoot"><span>Limit ${fmtDur(g.durationMs)} · ends ${time(g.endsAt)}</span>
-    <button class="gcancel" onclick="cancelGame('${g.id}')">Cancel</button></div>
+    <button class="gcancel" onclick="openEnd('${g.id}')">End early</button></div>
   </article>`}).join("");
 }
 function setKind(k){
@@ -466,13 +524,15 @@ function renderTeams(games){
   <div class="psub">${gw?`🏆 ${gw} win${gw>1?"s":""}`:"No wins yet"}${gl?` · next ≤ ${fmtDur(gl.max)}`:""}</div></div></li>`);
 }
 function renderFinished(games){
- const fin=games.filter(g=>g.status!=="live").slice(0,15);
- $("finCount").textContent=fin.length?`${fin.length} shown`:"";
+ const fin=games.filter(g=>g.status!=="live").slice(0,20);
  $("finished").innerHTML=fin.length?fin.map(g=>{
-  const res=g.status==="won"?`🏆 ${g.target}/${g.target} in ${fmtDur(g.finishedAt-g.startedAt)}`:g.status==="lost"?`❌ ${g.done}/${g.target}`:"Cancelled";
+  const S=STATUS[g.status]||STATUS.other;
+  const score=g.status==="cancelled"?"":`${g.done}/${g.target}${g.status==="won"&&g.finishedAt?` in ${fmtDur(g.finishedAt-g.startedAt)}`:""}`;
   return `<li><div class="pmain"><div class="pname">${ICON[g.kind]} ${esc(ownerName(g.kind,g.ownerId))}</div>
-   <div class="psub">${g.target} beers · ${fmtDur(g.durationMs)} limit · ${time(g.startedAt)}</div></div>
-   <span class="fres ${g.status}">${res}</span></li>`}).join("")
+   <div class="psub">${g.target} beers · ${fmtDur(g.durationMs)} limit · ${day(g.startedAt)} ${time(g.startedAt)}${g.manual?" · ✍️ added":""}</div>
+   ${g.note?`<div class="fnote">“${esc(g.note)}”</div>`:""}</div>
+   <span class="fres ${g.status}">${S.e} ${S.label}${score?`<small>${score}</small>`:""}</span>
+   <button class="del" aria-label="Delete game" onclick="deleteGame('${g.id}')">×</button></li>`}).join("")
   :'<li class="empty" style="display:block">Finished games show up here.</li>';
 }
 function renderLog(beers){
@@ -556,9 +616,68 @@ function startGame(){
  store.add("games",g);
  toast(`${ICON[kind]} ${ownerName(kind,owner)}: ${target} in ${fmtDur(ms)}. Go!`);
 }
-function cancelGame(id){
+function resultChips(el,keys,name){
+ $(el).innerHTML=keys.map((k,i)=>`<label><input type="radio" name="${name}" value="${k}"${i===0?" checked":""}><span class="em">${STATUS[k].e}</span>${STATUS[k].label}</label>`).join("");
+}
+let endingId=null;
+function openEnd(id){
+ const g=data.games[id];if(!g)return;
+ endingId=id;
+ $("endTitle").textContent=`End ${ownerName(g.kind,g.ownerId)}'s game`;
+ resultChips("endResults",["tapped","won","lost","other","cancelled"],"endRes");
+ $("endNote").value="";$("endDlg").showModal();
+}
+function saveEnd(){
+ const g=data.games[endingId];if(!g)return;
+ const res=document.querySelector('input[name="endRes"]:checked').value;
+ const t=now(),note=$("endNote").value.trim().slice(0,60);
+ const patch=res==="cancelled"?{cancelled:true}:{result:res,endedAt:t};
+ if(res==="won")patch.finishedAt=t;
+ if(note)patch.note=note;
+ store.update("games",endingId,patch);
+ toast(`${STATUS[res].e} ${ownerName(g.kind,g.ownerId)}: ${STATUS[res].label}`);
+ endingId=null;$("endDlg").close();
+}
+function deleteGame(id){
  const g=data.games[id];
- if(g&&confirm(`Cancel ${ownerName(g.kind,g.ownerId)}'s game? It won't count as a win or a loss.`))store.update("games",id,{cancelled:true});
+ if(g&&confirm(`Delete ${ownerName(g.kind,g.ownerId)}'s game from ${time(g.startedAt)}? If it was a win, the 30-minute rule goes back to the win before it.`))store.remove("games",id);
+}
+/* ---- manual past games ---- */
+function pastKindChanged(){
+ const k=$("pastKind").value,opts=k==="solo"?playersSorted():k==="team"?teamsSorted():[];
+ $("pastOwnerWrap").hidden=k==="group";
+ $("pastOwnerLabel").textContent=k==="team"?"Team":"Player";
+ $("pastOwner").innerHTML=opts.map(o=>`<option value="${o.id}">${esc(o.name)}</option>`).join("");
+ if(k==="solo"&&me&&data.players[me])$("pastOwner").value=me;
+}
+function openPast(){
+ $("pastKind").value=kind;pastKindChanged();
+ $("pastDone").value="";$("pastNote").value="";
+ $("pastStart").value=toLocalInput(now()-2*3.6e6);$("pastStart").max=toLocalInput(now());
+ resultChips("pastResults",["won","lost","tapped","other"],"pastRes");
+ $("pastDlg").showModal();
+}
+function savePast(){
+ const k=$("pastKind").value,owner=k==="group"?"group":$("pastOwner").value;
+ if(!owner){toast(k==="team"?"Create a team first.":"Add a player first.");return}
+ const target=parseInt($("pastTarget").value,10);
+ const ms=((parseInt($("pastHours").value,10)||0)*60+(parseInt($("pastMins").value,10)||0))*60000;
+ const start=new Date($("pastStart").value).getTime();
+ if(!(target>0)){toast("Set the beer goal.");return}
+ if(ms<60000){toast("Set the time limit.");return}
+ if(isNaN(start)){toast("Set when the game started.");return}
+ if(start>now()){toast("Start time is in the future.");return}
+ const res=document.querySelector('input[name="pastRes"]:checked').value;
+ const doneRaw=$("pastDone").value.trim();
+ const g={kind:k,ownerId:owner,target,durationMs:ms,startedAt:start,endsAt:start+ms,cancelled:false,result:res,manual:true};
+ // blank "beers drunk" = count from the beer log for that window (or the full goal for a win)
+ if(doneRaw!=="")g.done=Math.max(0,parseInt(doneRaw,10)||0);else if(res==="won")g.done=target;
+ const note=$("pastNote").value.trim().slice(0,60);if(note)g.note=note;
+ if(k==="solo")g.members={[owner]:true};
+ if(k==="team")g.members={...(data.teams[owner]?.members||{})};
+ store.add("games",g);
+ toast(`${STATUS[res].e} Past game added`);
+ $("pastDlg").close();
 }
 
 /* ---------------- beers ---------------- */
@@ -610,7 +729,7 @@ function resetNight(){
   store.clear("beers");store.clear("games");lastStatus={};
  }
 }
-$("editDlg").addEventListener("click",e=>{if(e.target===$("editDlg"))$("editDlg").close()});
+["editDlg","pastDlg","endDlg"].forEach(id=>$(id).addEventListener("click",e=>{if(e.target===$(id))$(id).close()}));
 boot();
 </script>
 </body>
