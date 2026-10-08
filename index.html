@@ -193,6 +193,19 @@ dialog.lightbox::backdrop{background:#000d}
 dialog.lightbox img{display:block;max-width:94vw;max-height:80vh;border-radius:12px;margin:0 auto 10px}
 dialog.lightbox p{color:var(--cream);text-align:center;margin:0 0 6px}
 
+.nights{display:grid;gap:10px}
+details.night{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+details.night summary{list-style:none;cursor:pointer;padding:13px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+details.night summary::-webkit-details-marker{display:none}
+details.night summary::after{content:"▾";color:var(--gold);font-size:16px;transition:transform .2s}
+details.night[open] summary::after{transform:rotate(180deg)}
+.ndate{font-weight:850;font-size:16px}
+.nsub{font-size:12px;color:var(--muted);margin-top:2px}
+.nthumbs{display:flex;margin-left:auto}
+.nthumbs span{width:34px;height:34px;border-radius:10px;overflow:hidden;border:2px solid var(--card);margin-left:-10px;background:#302014;display:flex;align-items:center;justify-content:center;font-size:16px}
+.nthumbs img{width:100%;height:100%;object-fit:cover}
+details.night .feed{padding:0 12px 12px}
+details.night .pcard{background:#1b120b}
 .toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top,0px));transform:translate(-50%,-160%);z-index:20;background:var(--cream);color:#201307;font-weight:800;padding:10px 18px;border-radius:999px;box-shadow:0 8px 24px #000a;transition:transform .35s;max-width:92vw;text-align:center;font-size:14px}
 .toast.show{transform:translate(-50%,0)}
 @media(max-width:390px){.count{font-size:78px}.latestphoto{height:210px}.itemphoto{height:120px}.gtimer{font-size:24px}}
@@ -314,6 +327,12 @@ dialog.lightbox p{color:var(--cream);text-align:center;margin:0 0 6px}
   <section class="block">
     <div class="sectionhead"><h2>🍻 The Pour Feed</h2><span>Tonight</span></div>
     <div class="feed" id="pourFeed"></div>
+  </section>
+
+  <section class="block" id="pastSec">
+    <div class="sectionhead"><h2>📖 Previous Check-ins</h2><span id="pastCount"></span></div>
+    <div class="nights" id="pastNights"></div>
+    <button class="smallbtn" id="moreNights" style="width:100%;margin-top:10px" onclick="nightsShown+=5;renderTap()" hidden>Show older nights</button>
   </section>
 </div>
 <div class="foot" id="foot">Connecting…</div>
@@ -939,7 +958,15 @@ function renderTap(){
   <div class="psmall" style="color:var(--cream)">${c.people.size} people are drinking ${esc(crewName(c))} tonight.</div>
   <div class="psmall">${esc([...c.people].map(pname).join(" · "))}</div></div></div>`).join("");
  // Feed
- $("pourFeed").innerHTML=pours.length?pours.map(p=>{
+ $("pourFeed").innerHTML=pours.length?pours.map(p=>pourCard(p)).join("")
+ :'<div class="empty">No pours yet tonight. Be the first to check in.</div>';
+ // Previous nights
+ renderPast();
+ // drink suggestions from everything poured before
+ $("drinkList").innerHTML=[...new Set(list("pours").map(p=>p.drink))].sort().map(d=>`<option value="${esc(d)}">`).join("");
+}
+
+function pourCard(p,withDay){
   const ph=p.photos||[],tagged=Object.keys(p.tagged||{}).map(pname);
   const reacts=REACTIONS.map(([k,e,l])=>{const who=Object.keys(p.reactions?.[k]||{});const mineR=who.includes(me);
    return `<button class="react${mineR?" mine":""}" title="${esc(who.map(pname).join(", "))}" onclick="toggleReact('${p.id}','${k}')">${e} ${l}${who.length?`<b>${who.length}</b>`:""}</button>`}).join("");
@@ -949,14 +976,41 @@ function renderTap(){
     <div class="ptop"><span class="pwho">${esc(pname(p.playerId))}${tagged.length?` <span style="color:var(--muted);font-weight:600">with ${esc(tagged.join(", "))}</span>`:""}</span>
      ${p.playerId===me?`<button class="del" aria-label="Delete pour" onclick="deletePour('${p.id}')">×</button>`:""}</div>
     <div class="pname">${catEmoji(p.category)} ${esc(p.drink)}</div>
-    <div class="psmall">${[p.vibeLabel?`${p.vibeEmoji||""} ${esc(p.vibeLabel)}`:"",p.whereLabel?esc(p.whereLabel):"",time(p.createdAt)].filter(Boolean).join(" · ")}</div>
+    <div class="psmall">${[p.vibeLabel?`${p.vibeEmoji||""} ${esc(p.vibeLabel)}`:"",p.whereLabel?esc(p.whereLabel):"",(withDay?day(p.createdAt)+" ":"")+time(p.createdAt)].filter(Boolean).join(" · ")}</div>
     ${isLive(p)?`<div class="pills"><span class="pill live">🍻 Still Pouring · <span data-since="${p.sessionStartedAt}">${fmtDur(Math.max(60000,now()-p.sessionStartedAt))}</span></span></div>`:""}
     ${p.note?`<div class="pquote" style="font-size:13px">“${esc(p.note)}”</div>`:""}
     <div class="reacts">${reacts}</div>
-   </div></article>`}).join("")
-  :'<div class="empty">No pours yet tonight. Be the first to check in.</div>';
- // drink suggestions from everything poured before
- $("drinkList").innerHTML=[...new Set(list("pours").map(p=>p.drink))].sort().map(d=>`<option value="${esc(d)}">`).join("");
+   </div></article>`}
+function nightOf(ts){const d=new Date(ts),s=new Date(d);s.setHours(5,0,0,0);if(d<s)s.setDate(s.getDate()-1);return s.getTime()}
+let nightsShown=5;
+const openNights=new Set();
+function renderPast(){
+ const cut=nightStart(),groups=new Map();
+ list("pours").filter(p=>typeof p.createdAt==="number"&&p.createdAt<cut).forEach(p=>{
+  const k=nightOf(p.createdAt);if(!groups.has(k))groups.set(k,[]);groups.get(k).push(p);
+ });
+ const nights=[...groups.entries()].sort((a,b)=>b[0]-a[0]);
+ const total=nights.reduce((n,[,ps])=>n+ps.length,0);
+ $("pastCount").textContent=nights.length?`${nights.length} night${nights.length>1?"s":""} · ${total} check-ins`:"";
+ $("moreNights").hidden=nights.length<=nightsShown;
+ if(!nights.length){$("pastNights").innerHTML='<div class="empty">Past nights show up here once tonight wraps up (5 AM).</div>';return}
+ // remember which nights were open across re-renders
+ document.querySelectorAll("details.night[open]").forEach(d=>openNights.add(d.dataset.night));
+ document.querySelectorAll("details.night:not([open])").forEach(d=>openNights.delete(d.dataset.night));
+ $("pastNights").innerHTML=nights.slice(0,nightsShown).map(([k,ps])=>{
+  ps.sort((a,b)=>b.createdAt-a.createdAt);
+  const people=new Set(ps.map(p=>p.playerId)).size;
+  const drinks=new Map();ps.forEach(p=>{const dk=p.drinkKey||drinkKey(p.drink);const e=drinks.get(dk)||{n:new Set(),name:p.drink};e.n.add(p.playerId);drinks.set(dk,e)});
+  const top=[...drinks.values()].sort((a,b)=>b.n.size-a.n.size)[0];
+  const thumbs=ps.filter(p=>p.photos&&p.photos.length).slice(0,3);
+  const d=new Date(k);
+  return `<details class="night" data-night="${k}"${openNights.has(String(k))?" open":""}>
+   <summary><div><div class="ndate">${d.toLocaleDateString([],{weekday:"long",month:"short",day:"numeric"})}</div>
+    <div class="nsub">${ps.length} check-in${ps.length>1?"s":""} · ${people} ${people>1?"people":"person"} · ${drinks.size} drink${drinks.size>1?"s":""}${top&&top.n.size>1?` · Top: ${esc(top.name)}`:""}</div></div>
+    ${thumbs.length?`<div class="nthumbs">${thumbs.map(p=>`<span><img src="${p.photos[0]}" alt="" loading="lazy"></span>`).join("")}</div>`:""}
+   </summary>
+   <div class="feed">${ps.map(p=>pourCard(p,true)).join("")}</div>
+  </details>`}).join("");
 }
 
 /* --- check-in sheet --- */
